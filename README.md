@@ -20,6 +20,8 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
 - Ensure you have the **`L298N EPMC MODULE`** (or a **`CUSTOM EPMC INTERFACE BOARD`**) interfaced with the geared dc motors and connected to the PC.
 
 
+
+
 #### Run App First Time [ linux or mac ]
 - Download (by clicking on the green Code button above) or clone the repo into your PC using **`git clone`**
   > you can use this command if you want to clone the repo:
@@ -46,6 +48,10 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
   ```shell
     python3 app.py 
   ```
+- build the application with pyinstaller:
+  ```shell
+    pyinstaller app.py --onefile --icon epmc_icon.ico --name epmc_app
+  ```
 - once you are done using the application, just close and dectivate the environment
   ```shell
     deactivate
@@ -63,6 +69,10 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
 - now you can run the app [follow the [blog tutorial]() on how to setup the PID of the Motor(s) connected to the **`L298N EPMC MODULE`** (or a **`CUSTOM EPMC INTERFACE BOARD`**)]
   ```shell
     python3 app.py 
+  ```
+- build the application with pyinstaller:
+  ```shell
+    pyinstaller app.py --onefile --icon epmc_icon.ico --name epmc_app
   ```
 - once you are done using the application, just close and dectivate the environment
   ```shell
@@ -98,6 +108,10 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
   ```shell
     python app.py 
   ```
+- build the application with pyinstaller:
+  ```shell
+    pyinstaller app.py --onefile --icon epmc_icon.ico --name epmc_app
+  ```
 - once you are done using the application, just close and dectivate the environment
   ```shell
     deactivate
@@ -116,6 +130,10 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
 - now you can run the app [follow the [blog tutorial]() on how to setup the PID of the Motor(s) connected to the **`L298N EPMC MODULE`** (or a **`CUSTOM EPMC INTERFACE BOARD`**)]
   ```shell
     python app.py 
+  ```
+- build the application with pyinstaller:
+  ```shell
+    pyinstaller app.py --onefile --icon epmc_icon.ico --name epmc_app
   ```
 - once you are done using the application, just close and dectivate the environment
   ```shell
