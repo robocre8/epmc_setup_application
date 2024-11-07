@@ -1,7 +1,9 @@
 import tkinter as tk
 import ttkbootstrap as tb
 from ttkbootstrap.constants import *
-from tkinter import messagebox
+from ttkbootstrap.dialogs import Messagebox
+
+from termcolor import colored
 
 from epmc.globalParams import g
 
@@ -30,21 +32,20 @@ class ResetSetupFrame(tk.Frame):
 
 
   def open_reset_dialog_event(self):
-    # isSuccessful = self.resetAllParams()
-    dialog = messagebox.askquestion("Form",
-                          "This will reset all parameters on the controller's EEPROM to default.\nAre you sure you want to continue?", 
-                          icon ='question')
+    dialog = Messagebox.show_question(title="RESET WARNING!!!", message="This will reset all parameters on the controller's EEPROM to default.\nAre you sure you want to continue?")
 
-    if dialog == "yes":
+    if dialog == "Yes":
       isSuccessful = self.resetAllParams()
       if isSuccessful:
-        messagebox.showinfo("Form",
-                          "SUCCESS:\n\nParameters Reset was successful", 
-                          icon ='info')
+        Messagebox.show_info("SUCCESS:\n\nParameters Reset was successful", "SUCCESS")
+        print(colored("SUCCESS:\n\nParameters Reset was successful", 'green'))
       else:
-        messagebox.showinfo("Form",
-                          "ERROR:\n\nSomething went wrong\nAttempt to reset was unsuccessful\nTry again", 
-                          icon ='error')
+        Messagebox.show_error("ERROR:\n\nSomething went wrong\nAttempt to reset was unsuccessful\nTry again", "ERROR")
+        print(colored("ERROR:\n\nSomething went wrong\nAttempt to reset was unsuccessful\nTry again", 'red'))
+    
+    else:
+      Messagebox.show_error("ERROR:\n\nSomething went wrong\nAttempt to reset was unsuccessful\nTry again", "ERROR")
+      print(colored("ERROR:\n\nSomething went wrong\nAttempt to reset was unsuccessful\nTry again", 'red'))
 
 
   def resetAllParams(self):

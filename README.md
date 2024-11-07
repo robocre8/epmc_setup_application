@@ -17,6 +17,13 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
   ```shell
     pip install virtualenv   //windows
   ```
+- install pyinstaller
+  ```shell
+    pip3 install pyinstaller //linux or mac
+  ```
+  ```shell
+    pip install pyinstaller   //windows
+  ```
 - Ensure you have the **`L298N EPMC MODULE`** (or a **`CUSTOM EPMC INTERFACE BOARD`**) interfaced with the geared dc motors and connected to the PC.
 
 
@@ -50,7 +57,7 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
   ```
 - build the application with pyinstaller:
   ```shell
-    pyinstaller app.py --onefile --icon epmc_icon.ico --name epmc_app
+    pyinstaller app.py --onefile --name epmc_app --icon epmc_icon.ico --hidden-import='PIL._tkinter_finder'
   ```
 - once you are done using the application, just close and dectivate the environment
   ```shell
@@ -72,7 +79,7 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
   ```
 - build the application with pyinstaller:
   ```shell
-    pyinstaller app.py --onefile --icon epmc_icon.ico --name epmc_app
+    pyinstaller app.py --onefile --name epmc_app --icon epmc_icon.ico --hidden-import='PIL._tkinter_finder'
   ```
 - once you are done using the application, just close and dectivate the environment
   ```shell
@@ -110,7 +117,7 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
   ```
 - build the application with pyinstaller:
   ```shell
-    pyinstaller app.py --onefile --icon epmc_icon.ico --name epmc_app
+    pyinstaller app.py --onefile --name epmc_app --icon epmc_icon.ico --hidden-import='PIL._tkinter_finder'
   ```
 - once you are done using the application, just close and dectivate the environment
   ```shell
@@ -133,7 +140,7 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
   ```
 - build the application with pyinstaller:
   ```shell
-    pyinstaller app.py --onefile --icon epmc_icon.ico --name epmc_app
+    pyinstaller app.py --onefile --name epmc_app --icon epmc_icon.ico --hidden-import='PIL._tkinter_finder'
   ```
 - once you are done using the application, just close and dectivate the environment
   ```shell

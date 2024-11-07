@@ -1,7 +1,7 @@
 import tkinter as tk
 import ttkbootstrap as tb
 from ttkbootstrap.constants import *
-from tkinter import messagebox
+from ttkbootstrap.dialogs import Messagebox
 
 import serial.tools.list_ports
 from epmc.serial_comm_lib import SerialComm
@@ -90,12 +90,8 @@ class SerialConnectFrame(tb.Frame):
     serIsConnected = self.connectToPort(port)
     if serIsConnected:
       # print("connection successful")
-      messagebox.showinfo("Form",
-                          f"SUCCESS:\n\nPID motor driver module found on port: {port}\n\nclick OK to continue", 
-                          icon ='info')
+      Messagebox.show_info(f"SUCCESS:\n\nEPMC Module found on port: {port}\n\nclick OK to continue", "SUCCESS")
       self.next_func()
     else:
       # print("Error connecting to driver")
-      messagebox.showinfo("Form", 
-                          f"ERROR:\n\nno PID motor driver module found on port: {port}\n\ntry again or try another port", 
-                          icon ='error')
+      Messagebox.show_error(f"ERROR:\n\nno EPMC Module found on port: {port}\n\ntry again or try another port", "ERROR")
