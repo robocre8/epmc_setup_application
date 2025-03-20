@@ -31,9 +31,11 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
 
 #### Run App First Time [ linux or mac ]
 - Download (by clicking on the green Code button above) or clone the repo into your PC using **`git clone`**
-  > you can use this command if you want to clone the repo:
-  >
-	>  ```git clone https://github.com/samuko-things-company/epmc_setup_application.git```
+> you can use this command if you want to clone the repo:
+>
+> ```shell
+> git clone https://github.com/robocre8/epmc_setup_application.git
+> ```
 
 - change directory into the root **`epmc_setup_application`** folder
 
@@ -51,14 +53,17 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
   ```shell
     pip3 install -r requirements.txt
   ```
-- now you can run the app [follow the [blog tutorial]() on how to setup the PID of the Motor(s) connected to the **`L298N EPMC MODULE`** (or a **`CUSTOM EPMC INTERFACE BOARD`**)]
+- now you can run the app 
   ```shell
     python3 app.py 
   ```
+  [follow the [blog tutorial]() on how to use the **Easy PID Motor Controller** to setup velocity PID for a DC Motor]
+  
 - build the application with pyinstaller:
   ```shell
-    pyinstaller app.py --onefile --name epmc_app --icon epmc_icon.ico --hidden-import='PIL._tkinter_finder'
+    pyinstaller app.py --onefile --name epmc_app_<OS-name>_<OS-version-number> --hidden-import='PIL._tkinter_finder'
   ```
+  
 - once you are done using the application, just close and dectivate the environment
   ```shell
     deactivate
@@ -73,15 +78,17 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
   ```
 - you should see now that you are in the **`.env`** virtual environment
 
-- now you can run the app [follow the [blog tutorial]() on how to setup the PID of the Motor(s) connected to the **`L298N EPMC MODULE`** (or a **`CUSTOM EPMC INTERFACE BOARD`**)]
+- now you can run the app 
   ```shell
     python3 app.py 
   ```
+  [follow the [blog tutorial]() on how to use the **Easy PID Motor Controller** to setup velocity PID for a DC Motor]
+  
 - build the application with pyinstaller:
   ```shell
-    pyinstaller app.py --onefile --name epmc_app --icon epmc_icon.ico --hidden-import='PIL._tkinter_finder'
+    pyinstaller app.py --onefile --name epmc_app_<OS-name>_<OS-version-number> --hidden-import='PIL._tkinter_finder'
   ```
-- once you are done using the application, just close and dectivate the environment
+- once you are done using the application, just close and deactivate the environment
   ```shell
     deactivate
   ```
@@ -90,14 +97,16 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
 
 #### Run App First Time [ Windows ]
 - Download (by clicking on the green Code button above) or clone the repo into your PC using **`git clone`**
-  > you can use this command if you want to clone the repo:
-  >
-	>  ```git clone https://github.com/samuko-things-company/epmc_setup_application.git```
+> you can use this command if you want to clone the repo:
+>
+> ```shell
+> git clone https://github.com/robocre8/epmc_setup_application.git
+> ```
 
 - change directory into the root **`epmc_setup_application`** folder
 
 - create a python virtual environment named **`.env`** in the root folder 
-	```shell
+  ```shell
     python3 -m venv .env
   ```
 - activate the virtual environment
@@ -111,13 +120,15 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
   ```shell
     pip install -r requirements.txt
   ```
-- now you can run the app [follow the [blog tutorial]() on how to setup the PID of the Motor(s) connected to the **`L298N EPMC MODULE`** (or a **`CUSTOM EPMC INTERFACE BOARD`**)]
+- now you can run the app 
   ```shell
     python app.py 
   ```
+  [follow the [blog tutorial]() on how to use the **Easy PID Motor Controller** to setup velocity PID for a DC Motor]
+  
 - build the application with pyinstaller:
   ```shell
-    pyinstaller app.py --onefile --name epmc_app --icon epmc_icon.ico --hidden-import='PIL._tkinter_finder'
+    pyinstaller app.py --onefile --name epmc_app_<OS-name>_<OS-version-number> --hidden-import='PIL._tkinter_finder'
   ```
 - once you are done using the application, just close and dectivate the environment
   ```shell
@@ -134,15 +145,22 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
   ```
 - you should see now that you are in the **`.env`** virtual environment
 
-- now you can run the app [follow the [blog tutorial]() on how to setup the PID of the Motor(s) connected to the **`L298N EPMC MODULE`** (or a **`CUSTOM EPMC INTERFACE BOARD`**)]
+- now you can run the app 
   ```shell
     python app.py 
   ```
+  [follow the [blog tutorial]() on how to use the **Easy PID Motor Controller** to setup velocity PID for a DC Motor]
+  
 - build the application with pyinstaller:
   ```shell
-    pyinstaller app.py --onefile --name epmc_app --icon epmc_icon.ico --hidden-import='PIL._tkinter_finder'
+    pyinstaller app.py --onefile --name epmc_app_<OS-name>_<OS-version-number> --hidden-import='PIL._tkinter_finder'
   ```
 - once you are done using the application, just close and dectivate the environment
   ```shell
     deactivate
   ```
+#
+
+
+
+`pyinstaller app.py --onefile --name epmc_app --icon eimu_icon.ico --hidden-import='PIL._tkinter_finder'`
