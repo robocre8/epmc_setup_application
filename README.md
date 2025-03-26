@@ -140,8 +140,8 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
 
 - activate the virtual environment
   ```shell
-    env/Scripts/activate.bat //In CMD   or
-    env/Scripts/Activate.ps1 //In Powershel
+    ./.env/Scripts/activate.bat //In CMD   or
+  .\.env\Scripts\Activate.ps1 //In Powershel
   ```
 - you should see now that you are in the **`.env`** virtual environment
 
