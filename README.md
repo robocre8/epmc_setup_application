@@ -1,6 +1,8 @@
 # Easy PID Motor Controller (EPMC) Setup Application
 It contains source code of the Easy PID Motor Controller (EPMC) GUI application. The application requires that you have the **`L298N EPMC MODULE`** (or a **`CUSTOM EPMC INTERFACE BOARD`**) is connected to your PC. Without the module, only the start page can be viewed.
 
+![Screenshot 2025-05-08 150800](https://github.com/user-attachments/assets/e54d6d61-082f-4f94-b973-b93f00fe7d40)
+
 ### Running the GUI app (Using python virtual environment)
 
 #
