@@ -20,6 +20,7 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
 - install python virtual environment
   > ```shell
   > sudo apt install python3-pip   # linux or mac users
+  > sudo apt install python3-venv   # linux or mac users
   > sudo apt install python3-virtualenv   # linux or mac users
   > ```
   > *OR*
@@ -176,7 +177,32 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
 
 #
 
-#### Build epmc_app with pyinstaller
+#### Build epmc_app with pyinstaller [Linux and Mac]
+
+- change directory into the root **`epmc_setup_application`** folder
+  > ```shell
+  > cd epmc_setup_application/
+  > ```
+
+- activate the virtual environment
+  > ```shell
+  > source .env/bin/activate
+  > ```
+
+- you should see now that you are in the **`.env`** virtual environment
+
+- build the application with pyinstaller:
+  > ```shell
+  > pyinstaller app.py --onefile --name epmc_app_ubuntu_<OS-version-number> --hidden-import='PIL._tkinter_finder' --noconsole
+  > ```
+  > OR
+  > ```shell
+  > pyinstaller app.py --onefile --name epmc_app_mac_<OS-version-number> --hidden-import='PIL._tkinter_finder' --noconsole
+  > ```
+
+#
+
+#### Build epmc_app with pyinstaller [Windows]
 
 - change directory into the root **`epmc_setup_application`** folder
   > ```shell
@@ -193,7 +219,7 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
 
 - build the application with pyinstaller:
   > ```shell
-  > pyinstaller app.py --onefile --name epmc_app_<OS-name>_<OS-version-number> --hidden-import='PIL._tkinter_finder'
+  > pyinstaller app.py --onefile --name epmc_app_windows_<OS-version-number> --hidden-import='PIL._tkinter_finder' --noconsole
   > ```
   
 - once you are done, close and dectivate the environment
