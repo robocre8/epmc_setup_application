@@ -38,39 +38,42 @@ class CmdMotorFrame(tb.LabelFrame):
 
   def startForwardCommand(self, e):
     # print("start forward command")
-    if self.motorNo == 0:
-      if int(g.motorDirConfig[self.motorNo]) == 1:
-        isSuccess = g.serClient.send("/pwm", g.motorTestPwm[self.motorNo], 0)
-      elif int(g.motorDirConfig[self.motorNo]) == -1:
-        isSuccess = g.serClient.send("/pwm", -g.motorTestPwm[self.motorNo], 0)
-    elif self.motorNo == 1:
-      if int(g.motorDirConfig[self.motorNo]) == 1:
-        isSuccess = g.serClient.send("/pwm", 0, g.motorTestPwm[self.motorNo])
-      elif int(g.motorDirConfig[self.motorNo]) == -1:
-        isSuccess = g.serClient.send("/pwm", 0, -g.motorTestPwm[self.motorNo])
+    if int(g.motorDirConfig[self.motorNo]) == 1:
+      #---------------------------------------------------------------------#
+      if self.motorNo == 0:
+        g.epmc.writePWM(g.motorTestPwm[self.motorNo], 0)
+      elif self.motorNo == 1:
+        g.epmc.writePWM(0, g.motorTestPwm[self.motorNo])
+      #---------------------------------------------------------------------#
+    elif int(g.motorDirConfig[self.motorNo]) == -1:
+      #---------------------------------------------------------------------#
+      if self.motorNo == 0:
+        g.epmc.writePWM(-g.motorTestPwm[self.motorNo], 0)
+      elif self.motorNo == 1:
+        g.epmc.writePWM(0, -g.motorTestPwm[self.motorNo])
+      #---------------------------------------------------------------------#
 
   def stopForwardCommand(self, e):
     # print("stop forward command")
-    isSuccess = g.serClient.send("/pwm", 0, 0)
+    g.epmc.writePWM(0, 0)
 
   def startReverseCommand(self, e):
     # print("start reverse command")
-    if self.motorNo == 0:
-      if int(g.motorDirConfig[self.motorNo]) == 1:
-        isSuccess = g.serClient.send("/pwm", -g.motorTestPwm[self.motorNo], 0)
-      elif int(g.motorDirConfig[self.motorNo]) == -1:
-        isSuccess = g.serClient.send("/pwm", g.motorTestPwm[self.motorNo], 0)
-    elif self.motorNo == 1:
-      if int(g.motorDirConfig[self.motorNo]) == 1:
-        isSuccess = g.serClient.send("/pwm", 0, -g.motorTestPwm[self.motorNo])
-      elif int(g.motorDirConfig[self.motorNo]) == -1:
-        isSuccess = g.serClient.send("/pwm", 0, g.motorTestPwm[self.motorNo])
+    if int(g.motorDirConfig[self.motorNo]) == 1:
+      #---------------------------------------------------------------------#
+      if self.motorNo == 0:
+        g.epmc.writePWM(-g.motorTestPwm[self.motorNo], 0)
+      elif self.motorNo == 1:
+        g.epmc.writePWM(0, -g.motorTestPwm[self.motorNo])
+      #---------------------------------------------------------------------#
+    elif int(g.motorDirConfig[self.motorNo]) == -1:
+      #---------------------------------------------------------------------#
+      if self.motorNo == 0:
+        g.epmc.writePWM(g.motorTestPwm[self.motorNo], 0)
+      elif self.motorNo == 1:
+        g.epmc.writePWM(0, g.motorTestPwm[self.motorNo])
+      #---------------------------------------------------------------------#
 
   def stopReverseCommand(self, e):
     # print("stop reverse command")
-    isSuccess = g.serClient.send("/pwm", 0, 0)
-    
-
-
-
-# motorCommandButton.pack(side="top", fill="x", padx=(100,100), pady=(20,50))
+    g.epmc.writePWM(0, 0)
