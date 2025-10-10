@@ -17,7 +17,7 @@ class PidSetupFrame(tb.Frame):
 
     self.motorNo = motorNo
 
-    self.label = tb.Label(self, text=f"MOTOR {g.motorLabel[self.motorNo]} PID SETUP", font=('Monospace',16, 'bold') ,bootstyle="dark")
+    self.label = tb.Label(self, text=f"MOTOR {self.motorNo} PID SETUP", font=('Monospace',16, 'bold') ,bootstyle="dark")
 
     self.frame1 = tb.Frame(self)
     self.frame2 = tb.Frame(self)
@@ -28,24 +28,24 @@ class PidSetupFrame(tb.Frame):
 
 
     #create widgets to be added to frame1
-    g.motorKp[self.motorNo] = g.serClient.get(f"/kp{g.motorLabel[self.motorNo]}")
+    g.motorKp[self.motorNo] = g.epmc.getKp(self.motorNo)
     self.setKp = SetValueFrame(self.frame1, keyTextInit=f"*KP: ", valTextInit=g.motorKp[self.motorNo],
                                middleware_func=self.setKpFunc)
 
-    g.motorKi[self.motorNo] = g.serClient.get(f"/ki{g.motorLabel[self.motorNo]}")
+    g.motorKi[self.motorNo] = g.epmc.getKi(self.motorNo)
     self.setKi = SetValueFrame(self.frame1, keyTextInit=f"*KI: ", valTextInit=g.motorKi[self.motorNo],
                                middleware_func=self.setKiFunc)
 
-    g.motorKd[self.motorNo] = g.serClient.get(f"/kd{g.motorLabel[self.motorNo]}")
+    g.motorKd[self.motorNo] = g.epmc.getKd(self.motorNo)
     self.setKd = SetValueFrame(self.frame1, keyTextInit=f"*KD: ", valTextInit=g.motorKd[self.motorNo],
                                middleware_func=self.setKdFunc)
 
-    g.motorCf[self.motorNo] = g.serClient.get(f"/f0{g.motorLabel[self.motorNo]}")
+    g.motorCf[self.motorNo] = g.epmc.getCutOffFreq(self.motorNo)
     self.setCf = SetValueFrame(self.frame1, keyTextInit=f"*CF(Hz): ", valTextInit=g.motorCf[self.motorNo],
                                middleware_func=self.setCfFunc)
     
 
-    g.motorMaxVel[self.motorNo] = g.serClient.get(f"/maxVel{g.motorLabel[self.motorNo]}")
+    g.motorMaxVel[self.motorNo] = g.epmc.getMaxVel(self.motorNo)
     self.setMaxVel = SetValueFrame(self.frame1, keyTextInit=f"*W_MAX(rad/s): ", valTextInit=g.motorMaxVel[self.motorNo],
                                    middleware_func=self.setMaxVelFunc)
     
@@ -88,8 +88,8 @@ class PidSetupFrame(tb.Frame):
   def setKpFunc(self, kp_val_str):
     try:
       if kp_val_str:
-        isSuccessful = g.serClient.send(f"/kp{g.motorLabel[self.motorNo]}", float(kp_val_str))
-        val = g.serClient.get(f"/kp{g.motorLabel[self.motorNo]}")
+        isSuccessful = g.epmc.setKp(self.motorNo, float(kp_val_str))
+        val = g.epmc.getKp(self.motorNo)
         g.motorKp[self.motorNo] = val
     except:
       pass
@@ -100,8 +100,8 @@ class PidSetupFrame(tb.Frame):
   def setKiFunc(self, ki_val_str):
     try:
       if ki_val_str:
-        isSuccessful = g.serClient.send(f"/ki{g.motorLabel[self.motorNo]}", float(ki_val_str))
-        val = g.serClient.get(f"/ki{g.motorLabel[self.motorNo]}")
+        isSuccessful = g.epmc.setKi(self.motorNo, float(ki_val_str))
+        val = g.epmc.getKi(self.motorNo)
         g.motorKi[self.motorNo] = val
     except:
       pass
@@ -112,8 +112,8 @@ class PidSetupFrame(tb.Frame):
   def setKdFunc(self, kd_val_str):
     try:
       if kd_val_str:
-        isSuccessful = g.serClient.send(f"/kd{g.motorLabel[self.motorNo]}", float(kd_val_str))
-        val = g.serClient.get(f"/kd{g.motorLabel[self.motorNo]}")
+        isSuccessful = g.epmc.setKd(self.motorNo, float(kd_val_str))
+        val = g.epmc.getKd(self.motorNo)
         g.motorKd[self.motorNo] = val
     except:
       pass
@@ -124,8 +124,8 @@ class PidSetupFrame(tb.Frame):
   def setCfFunc(self, cf_val_str):
     try:
       if cf_val_str:
-        isSuccessful = g.serClient.send(f"/f0{g.motorLabel[self.motorNo]}", float(cf_val_str))
-        val = g.serClient.get(f"/f0{g.motorLabel[self.motorNo]}")
+        isSuccessful = g.epmc.setCutOffFreq(self.motorNo, float(cf_val_str))
+        val = g.epmc.getCutOffFreq(self.motorNo)
         g.motorCf[self.motorNo] = val
     except:
       pass
@@ -136,8 +136,8 @@ class PidSetupFrame(tb.Frame):
   def setMaxVelFunc(self, vel_val_str):
     try:
       if vel_val_str:
-        isSuccessful = g.serClient.send(f"/maxVel{g.motorLabel[self.motorNo]}", float(vel_val_str))
-        val = g.serClient.get(f"/maxVel{g.motorLabel[self.motorNo]}")
+        isSuccessful = g.epmc.setMaxVel(self.motorNo, float(vel_val_str))
+        val = g.epmc.getMaxVel(self.motorNo)
         g.motorMaxVel[self.motorNo] = val
     except:
       pass

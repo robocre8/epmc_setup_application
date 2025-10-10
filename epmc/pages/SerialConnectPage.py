@@ -4,7 +4,7 @@ from ttkbootstrap.constants import *
 from ttkbootstrap.dialogs import Messagebox
 
 import serial.tools.list_ports
-from epmc.serial_comm_lib import SerialComm
+from epmc.epmc_full import EPMC_FULL
 
 import time
 
@@ -68,11 +68,12 @@ class SerialConnectFrame(tb.Frame):
       port_list = ['None']
 
 
-  def connectToPort(self, name):
+  def connectToPort(self, port):
     try:
-      g.serClient = SerialComm(name)
-      time.sleep(6)
-      isSuccessful = g.serClient.send("/pwm", 0, 0) 
+      g.epmc = EPMC_FULL(port)
+      time.sleep(4)
+      g.epmc.setCmdTimeout(0)
+      g.epmc.clearDataBuffer()
       return True
     except:
       return False

@@ -25,8 +25,14 @@ class GraphFrame(tb.Frame):
     buttonStyleName = 'danger.TButton'
     buttonStyle.configure(buttonStyleName, font=('Monospace',9, 'bold'))
 
-
-    g.motorTargetVel[self.motorNo], g.motorActualVel[self.motorNo] = g.serClient.get(f'/pVel{g.motorLabel[self.motorNo]}')
+    #---------------------------------------------------------------------#
+    if self.motorNo == 0:
+      g.motorActualVel[self.motorNo],_ = g.epmc.readTVel()
+      g.motorTargetVel[self.motorNo],_ = g.epmc.readVel()
+    elif self.motorNo == 1:
+      _,g.motorActualVel[self.motorNo] = g.epmc.readTVel()
+      _,g.motorTargetVel[self.motorNo] = g.epmc.readVel()
+    #---------------------------------------------------------------------#
 
     self.actualText = tb.Label(self.textFrame1, text="ACTUAL(rad/s):", font=('Monospace',10, 'bold') ,bootstyle="danger")
     self.actualVal = tb.Label(self.textFrame1, text=g.motorActualVel[self.motorNo], font=('Monospace',10), bootstyle="dark")
@@ -186,14 +192,17 @@ class GraphFrame(tb.Frame):
         self.deletePlot(self.plotLineBufferA, self.plotLineBufferB)
         self.plotButton.configure(text='START PLOT')
         self.clearPlot = False
+        # g.epmc.setPidMode(self.motorNo, 0)
         time.sleep(0.1)
 
     elif self.doPlot:
         self.doPlot = False 
+        # g.epmc.setPidMode(self.motorNo, 0)
         # print('stop plot')
     else:
         self.doPlot = True 
         self.doPlotTime = time.time()
+        # g.epmc.setPidMode(self.motorNo, 1)
         # print('start plot')
 
 
@@ -211,10 +220,9 @@ class GraphFrame(tb.Frame):
   def plot_graph(self):
       if self.doPlot and self.doPlotDuration < time.time()-self.doPlotTime:
           if g.motorIsOn[self.motorNo]:
-            isSuccess = g.serClient.send("/tag", 0.0, 0.0)
-            if isSuccess:
-              g.motorIsOn[self.motorNo] = False
-              # print('Motor off', isSuccess)
+            g.epmc.writeSpeed(0.0, 0.0)
+            g.motorIsOn[self.motorNo] = False
+            # print('Motor off', isSuccess)
           self.doPlot = False 
           self.clearPlot = True
           self.plotButton.configure(text='CLEAR PLOT')
@@ -235,27 +243,33 @@ class GraphFrame(tb.Frame):
                                   deltaT=time.time()-self.doPlotTime)
           
           if not g.motorIsOn[self.motorNo]:
-            
-            #------------------------------------------------------------------------#
+            #---------------------------------------------------------------------#
             if self.motorNo == 0:
-              isSuccess = g.serClient.send("/tag", targetVel, 0)
+              g.epmc.writeSpeed(targetVel, 0.0)
             elif self.motorNo == 1:
-              isSuccess = g.serClient.send("/tag", 0, targetVel)
-            #------------------------------------------------------------------------#
+              g.epmc.writeSpeed(0.0, targetVel)
+            #---------------------------------------------------------------------#
 
-            if isSuccess:
-              g.motorIsOn[self.motorNo] = True
-              # print('Motor on', isSuccess)
+            g.motorIsOn[self.motorNo] = True
+            # print('Motor on', isSuccess)
           
-          #-------------------------------------------------------------------------#
+          #---------------------------------------------------------------------#
           if self.motorNo == 0:
-            isSuccess = g.serClient.send("/tag", targetVel, 0)
+            g.epmc.writeSpeed(targetVel, 0.0)
           elif self.motorNo == 1:
-            isSuccess = g.serClient.send("/tag", 0, targetVel)
-          #------------------------------------------------------------------------#
+            g.epmc.writeSpeed(0.0, targetVel)
+          #---------------------------------------------------------------------#
 
           try:
-            g.motorTargetVel[self.motorNo], g.motorActualVel[self.motorNo] = g.serClient.get(f"/pVel{g.motorLabel[self.motorNo]}")
+            #---------------------------------------------------------------------#
+            if self.motorNo == 0:
+              g.motorActualVel[self.motorNo],_ = g.epmc.readTVel()
+              g.motorTargetVel[self.motorNo],_ = g.epmc.readVel()
+            elif self.motorNo == 1:
+              _,g.motorActualVel[self.motorNo] = g.epmc.readTVel()
+              _,g.motorTargetVel[self.motorNo] = g.epmc.readVel()
+            #---------------------------------------------------------------------#
+            
           except:
             pass
 
@@ -290,12 +304,11 @@ class GraphFrame(tb.Frame):
 
       else:
           if g.motorIsOn[self.motorNo]:
-            isSuccess = g.serClient.send("/tag", 0, 0)
-            if isSuccess:
-              self.clearPlot = True
-              self.plotButton.configure(text='CLEAR PLOT')
-              g.motorIsOn[self.motorNo] = False
-              # print('Motor off', isSuccess)
+            g.epmc.writeSpeed(0.0, 0.0)
+            self.clearPlot = True
+            self.plotButton.configure(text='CLEAR PLOT')
+            g.motorIsOn[self.motorNo] = False
+            # print('Motor off', isSuccess)
           self.currValA = 0.0
           self.prevValA = 0.0
           self.currValB = 0.0

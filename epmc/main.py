@@ -2,7 +2,6 @@ import tkinter as tk
 import ttkbootstrap as tb
 from ttkbootstrap.constants import *
 
-import epmc
 from epmc.globalParams import g
 from epmc.pages.SerialConnectPage import SerialConnectFrame
 from epmc.pages.MainAppPage import MainAppFrame
@@ -35,7 +34,7 @@ class App(tb.Window):
 
 
 def main():
-  g.app = App(title="Easy PID Motor Controller (EPMC) Application", size=(900,650))
+  g.app = App(title="EPMC Setup Application", size=(900,650))
   g.app.mainloop()
 
 
