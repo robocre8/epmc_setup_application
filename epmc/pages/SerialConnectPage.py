@@ -72,8 +72,8 @@ class SerialConnectFrame(tb.Frame):
     try:
       g.epmc = EPMC_FULL(port)
       time.sleep(4)
-      g.epmc.setCmdTimeout(0)
-      g.epmc.clearDataBuffer()
+      IsSuccessful = g.epmc.setCmdTimeout(0)
+      IsSuccessful = g.epmc.clearDataBuffer()
       return True
     except:
       return False

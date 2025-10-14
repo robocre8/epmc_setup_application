@@ -26,12 +26,10 @@ class GraphFrame(tb.Frame):
     buttonStyle.configure(buttonStyleName, font=('Monospace',9, 'bold'))
 
     #---------------------------------------------------------------------#
-    if self.motorNo == 0:
-      g.motorActualVel[self.motorNo],_ = g.epmc.readTVel()
-      g.motorTargetVel[self.motorNo],_ = g.epmc.readVel()
-    elif self.motorNo == 1:
-      _,g.motorActualVel[self.motorNo] = g.epmc.readTVel()
-      _,g.motorTargetVel[self.motorNo] = g.epmc.readVel()
+    isSuccessful, tvel = g.epmc.readTVel()
+    isSuccessful, vel = g.epmc.readVel()
+    g.motorTargetVel[self.motorNo] = round(tvel[self.motorNo],4)
+    g.motorActualVel[self.motorNo] = round(vel[self.motorNo],4)
     #---------------------------------------------------------------------#
 
     self.actualText = tb.Label(self.textFrame1, text="ACTUAL(rad/s):", font=('Monospace',10, 'bold') ,bootstyle="danger")
@@ -192,17 +190,17 @@ class GraphFrame(tb.Frame):
         self.deletePlot(self.plotLineBufferA, self.plotLineBufferB)
         self.plotButton.configure(text='START PLOT')
         self.clearPlot = False
-        # g.epmc.setPidMode(self.motorNo, 0)
+        # isSuccessful = g.epmc.setPidMode(self.motorNo, 0)
         time.sleep(0.1)
 
     elif self.doPlot:
         self.doPlot = False 
-        # g.epmc.setPidMode(self.motorNo, 0)
+        # isSuccessful = g.epmc.setPidMode(self.motorNo, 0)
         # print('stop plot')
     else:
         self.doPlot = True 
         self.doPlotTime = time.time()
-        # g.epmc.setPidMode(self.motorNo, 1)
+        # isSuccessful = g.epmc.setPidMode(self.motorNo, 1)
         # print('start plot')
 
 
@@ -262,12 +260,10 @@ class GraphFrame(tb.Frame):
 
           try:
             #---------------------------------------------------------------------#
-            if self.motorNo == 0:
-              g.motorActualVel[self.motorNo],_ = g.epmc.readTVel()
-              g.motorTargetVel[self.motorNo],_ = g.epmc.readVel()
-            elif self.motorNo == 1:
-              _,g.motorActualVel[self.motorNo] = g.epmc.readTVel()
-              _,g.motorTargetVel[self.motorNo] = g.epmc.readVel()
+            isSuccessful, tvel = g.epmc.readTVel()
+            isSuccessful, vel = g.epmc.readVel()
+            g.motorTargetVel[self.motorNo] = round(tvel[self.motorNo],4)
+            g.motorActualVel[self.motorNo] = round(vel[self.motorNo],4)
             #---------------------------------------------------------------------#
             
           except:
