@@ -29,12 +29,10 @@ class MotorDrawFrame(tb.Frame):
     buttonStyle.configure(buttonStyleName, font=('Monospace',10, 'bold'))
 
     #---------------------------------------------------------------------#
-    if self.motorNo == 0:
-      g.motorAngPos[self.motorNo],_ = g.epmc.readPos()
-      g.motorAngVel[self.motorNo],_ = g.epmc.readVel()
-    elif self.motorNo == 1:
-      _,g.motorAngPos[self.motorNo] = g.epmc.readPos()
-      _,g.motorAngVel[self.motorNo] = g.epmc.readVel()
+    isSuccessful, pos = g.epmc.readPos()
+    isSuccessful, vel = g.epmc.readVel()
+    g.motorAngPos[self.motorNo] = round(pos[self.motorNo],2)
+    g.motorAngVel[self.motorNo] = round(vel[self.motorNo],4)
     #---------------------------------------------------------------------#
       
 
@@ -120,12 +118,10 @@ class MotorDrawFrame(tb.Frame):
 
     try:
       #---------------------------------------------------------------------#
-      if self.motorNo == 0:
-        g.motorAngPos[self.motorNo],_ = g.epmc.readPos()
-        g.motorAngVel[self.motorNo],_ = g.epmc.readVel()
-      elif self.motorNo == 1:
-        _,g.motorAngPos[self.motorNo] = g.epmc.readPos()
-        _,g.motorAngVel[self.motorNo] = g.epmc.readVel()
+      isSuccessful, pos = g.epmc.readPos()
+      isSuccessful, vel = g.epmc.readVel()
+      g.motorAngPos[self.motorNo] = round(pos[self.motorNo],2)
+      g.motorAngVel[self.motorNo] = round(vel[self.motorNo],4)
       #---------------------------------------------------------------------#
       
     except:

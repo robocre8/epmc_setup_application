@@ -28,24 +28,24 @@ class PidSetupFrame(tb.Frame):
 
 
     #create widgets to be added to frame1
-    g.motorKp[self.motorNo] = g.epmc.getKp(self.motorNo)
+    isSussessful, g.motorKp[self.motorNo] = g.epmc.getKp(self.motorNo)
     self.setKp = SetValueFrame(self.frame1, keyTextInit=f"*KP: ", valTextInit=g.motorKp[self.motorNo],
                                middleware_func=self.setKpFunc)
 
-    g.motorKi[self.motorNo] = g.epmc.getKi(self.motorNo)
+    isSussessful, g.motorKi[self.motorNo] = g.epmc.getKi(self.motorNo)
     self.setKi = SetValueFrame(self.frame1, keyTextInit=f"*KI: ", valTextInit=g.motorKi[self.motorNo],
                                middleware_func=self.setKiFunc)
 
-    g.motorKd[self.motorNo] = g.epmc.getKd(self.motorNo)
+    isSussessful, g.motorKd[self.motorNo] = g.epmc.getKd(self.motorNo)
     self.setKd = SetValueFrame(self.frame1, keyTextInit=f"*KD: ", valTextInit=g.motorKd[self.motorNo],
                                middleware_func=self.setKdFunc)
 
-    g.motorCf[self.motorNo] = g.epmc.getCutOffFreq(self.motorNo)
+    isSussessful, g.motorCf[self.motorNo] = g.epmc.getCutOffFreq(self.motorNo)
     self.setCf = SetValueFrame(self.frame1, keyTextInit=f"*CF(Hz): ", valTextInit=g.motorCf[self.motorNo],
                                middleware_func=self.setCfFunc)
     
 
-    g.motorMaxVel[self.motorNo] = g.epmc.getMaxVel(self.motorNo)
+    isSussessful, g.motorMaxVel[self.motorNo] = g.epmc.getMaxVel(self.motorNo)
     self.setMaxVel = SetValueFrame(self.frame1, keyTextInit=f"*W_MAX(rad/s): ", valTextInit=g.motorMaxVel[self.motorNo],
                                    middleware_func=self.setMaxVelFunc)
     
@@ -89,7 +89,7 @@ class PidSetupFrame(tb.Frame):
     try:
       if kp_val_str:
         isSuccessful = g.epmc.setKp(self.motorNo, float(kp_val_str))
-        val = g.epmc.getKp(self.motorNo)
+        isSussessful, val = g.epmc.getKp(self.motorNo)
         g.motorKp[self.motorNo] = val
     except:
       pass
@@ -101,7 +101,7 @@ class PidSetupFrame(tb.Frame):
     try:
       if ki_val_str:
         isSuccessful = g.epmc.setKi(self.motorNo, float(ki_val_str))
-        val = g.epmc.getKi(self.motorNo)
+        isSussessful, val = g.epmc.getKi(self.motorNo)
         g.motorKi[self.motorNo] = val
     except:
       pass
@@ -113,7 +113,7 @@ class PidSetupFrame(tb.Frame):
     try:
       if kd_val_str:
         isSuccessful = g.epmc.setKd(self.motorNo, float(kd_val_str))
-        val = g.epmc.getKd(self.motorNo)
+        isSussessful, val = g.epmc.getKd(self.motorNo)
         g.motorKd[self.motorNo] = val
     except:
       pass
@@ -125,7 +125,7 @@ class PidSetupFrame(tb.Frame):
     try:
       if cf_val_str:
         isSuccessful = g.epmc.setCutOffFreq(self.motorNo, float(cf_val_str))
-        val = g.epmc.getCutOffFreq(self.motorNo)
+        isSussessful, val = g.epmc.getCutOffFreq(self.motorNo)
         g.motorCf[self.motorNo] = val
     except:
       pass
@@ -137,7 +137,7 @@ class PidSetupFrame(tb.Frame):
     try:
       if vel_val_str:
         isSuccessful = g.epmc.setMaxVel(self.motorNo, float(vel_val_str))
-        val = g.epmc.getMaxVel(self.motorNo)
+        isSussessful, val = g.epmc.getMaxVel(self.motorNo)
         g.motorMaxVel[self.motorNo] = val
     except:
       pass
