@@ -30,16 +30,16 @@ class MainAppFrame(tb.Frame):
     buttonStyleName = 'primary.Link.TButton'
     buttonStyle.configure(buttonStyleName, font=('Monospace',10, 'bold'))
 
-    self.button1 = tb.Button(self.sideNavFrame, text="MOTOR 0 ENC", style=buttonStyleName,
+    self.button1 = tb.Button(self.sideNavFrame, text="MOTOR A ENC", style=buttonStyleName,
                              command= lambda: self.displayPage(self.button1, self.displayMotor0EncSetupPage))
     
-    self.button2 = tb.Button(self.sideNavFrame, text="MOTOR 0 PID", style=buttonStyleName,
+    self.button2 = tb.Button(self.sideNavFrame, text="MOTOR A PID", style=buttonStyleName,
                              command= lambda: self.displayPage(self.button2, self.displayMotor0PidSetupPage))
     
-    self.button3 = tb.Button(self.sideNavFrame, text="MOTOR 1 ENC", style=buttonStyleName,
+    self.button3 = tb.Button(self.sideNavFrame, text="MOTOR B ENC", style=buttonStyleName,
                              command= lambda: self.displayPage(self.button3, self.displayMotor1EncSetupPage))
     
-    self.button4 = tb.Button(self.sideNavFrame, text="MOTOR 1 PID", style=buttonStyleName,
+    self.button4 = tb.Button(self.sideNavFrame, text="MOTOR B PID", style=buttonStyleName,
                              command= lambda: self.displayPage(self.button4, self.displayMotor1PidSetupPage))
     
     self.button5 = tb.Button(self.sideNavFrame, text="RESET", style=buttonStyleName,
