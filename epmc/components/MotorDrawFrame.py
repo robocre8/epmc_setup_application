@@ -2,10 +2,11 @@ import tkinter as tk
 import ttkbootstrap as tb
 from ttkbootstrap.constants import *
 
+from epmc.globalParams import g
+from epmc.epmc import EPMCSerialError
+
 from math import sin, cos, radians, pi
 import time
-
-from epmc.globalParams import g
 
 
 
@@ -29,10 +30,16 @@ class MotorDrawFrame(tb.Frame):
     buttonStyle.configure(buttonStyleName, font=('Monospace',10, 'bold'))
 
     #---------------------------------------------------------------------#
-    isSuccessful, pos = g.epmc.readPos()
-    isSuccessful, vel = g.epmc.readVel()
-    g.motorAngPos[self.motorNo] = round(pos[self.motorNo],2)
-    g.motorAngVel[self.motorNo] = round(vel[self.motorNo],4)
+    try:
+      pos0, pos1 = g.epmc.readPos()
+      pos=[pos0, pos1]
+      v0, v1 = g.epmc.readVel()
+      v=[v0, v1]
+      g.motorAngPos[self.motorNo] = pos[self.motorNo]
+      g.motorAngVel[self.motorNo] = v[self.motorNo]
+    except EPMCSerialError as e:
+      print(e)
+      pass
     #---------------------------------------------------------------------#
       
 
@@ -89,9 +96,8 @@ class MotorDrawFrame(tb.Frame):
 
   def sendPwmCtrl(self):
     if g.motorIsOn[self.motorNo]:
-      g.epmc.writePWM(0,0)
+      g.epmc.writePWM(0, 0)
       self.button2.configure(text="START MOTOR")
-      g.motorIsOn[self.motorNo] = False
 
     else:
       #---------------------------------------------------------------------#
@@ -116,16 +122,18 @@ class MotorDrawFrame(tb.Frame):
     self.canvas.delete(self.line)
     self.canvas.delete(self.mid_circle)
 
+    #---------------------------------------------------------------------#
     try:
-      #---------------------------------------------------------------------#
-      isSuccessful, pos = g.epmc.readPos()
-      isSuccessful, vel = g.epmc.readVel()
-      g.motorAngPos[self.motorNo] = round(pos[self.motorNo],2)
-      g.motorAngVel[self.motorNo] = round(vel[self.motorNo],4)
-      #---------------------------------------------------------------------#
-      
-    except:
+      pos0, pos1 = g.epmc.readPos()
+      pos=[pos0, pos1]
+      v0, v1 = g.epmc.readVel()
+      v=[v0, v1]
+      g.motorAngPos[self.motorNo] = pos[self.motorNo]
+      g.motorAngVel[self.motorNo] = v[self.motorNo]
+    except EPMCSerialError as e:
+      print(e)
       pass
+    #---------------------------------------------------------------------#
 
     g.motorTheta[self.motorNo] = round(self.absAngDeg(g.motorAngPos[self.motorNo]),2)
 
@@ -144,7 +152,7 @@ class MotorDrawFrame(tb.Frame):
     self.posVal.configure(text=f"{g.motorAngPos[self.motorNo]}")
     self.velVal.configure(text=f"{g.motorAngVel[self.motorNo]}")
 
-    self.canvas.after(1, self.draw_motor_ang_pos)
+    self.canvas.after(10, self.draw_motor_ang_pos)
 
 
   def resetInitialTheta(self):

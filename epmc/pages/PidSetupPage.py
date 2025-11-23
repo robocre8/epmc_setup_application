@@ -3,6 +3,7 @@ import ttkbootstrap as tb
 from ttkbootstrap.constants import *
 
 from epmc.globalParams import g
+from epmc.epmc import EPMCSerialError
 
 from epmc.components.SetValueFrame import SetValueFrame
 from epmc.components.SelectValueFrame import SelectValueFrame
@@ -17,6 +18,17 @@ class PidSetupFrame(tb.Frame):
 
     self.motorNo = motorNo
 
+    try:
+      g.motorKp[self.motorNo] = g.epmc.getKp(self.motorNo)
+      g.motorKi[self.motorNo] = g.epmc.getKi(self.motorNo)
+      g.motorKd[self.motorNo] = g.epmc.getKd(self.motorNo)
+      g.motorCf[self.motorNo] = g.epmc.getCutOffFreq(self.motorNo)
+      g.motorMaxVel[self.motorNo] = g.epmc.getMaxVel(self.motorNo)
+    except EPMCSerialError as e:
+      g.motorMaxVel[self.motorNo] = 10
+      print(e, "Default Max Vel back to 10")
+      pass
+
     self.label = tb.Label(self, text=f"MOTOR {self.motorNo} PID SETUP", font=('Monospace',16, 'bold') ,bootstyle="dark")
 
     self.frame1 = tb.Frame(self)
@@ -28,24 +40,19 @@ class PidSetupFrame(tb.Frame):
 
 
     #create widgets to be added to frame1
-    isSussessful, g.motorKp[self.motorNo] = g.epmc.getKp(self.motorNo)
+    
     self.setKp = SetValueFrame(self.frame1, keyTextInit=f"*KP: ", valTextInit=g.motorKp[self.motorNo],
                                middleware_func=self.setKpFunc)
 
-    isSussessful, g.motorKi[self.motorNo] = g.epmc.getKi(self.motorNo)
     self.setKi = SetValueFrame(self.frame1, keyTextInit=f"*KI: ", valTextInit=g.motorKi[self.motorNo],
                                middleware_func=self.setKiFunc)
 
-    isSussessful, g.motorKd[self.motorNo] = g.epmc.getKd(self.motorNo)
     self.setKd = SetValueFrame(self.frame1, keyTextInit=f"*KD: ", valTextInit=g.motorKd[self.motorNo],
                                middleware_func=self.setKdFunc)
 
-    isSussessful, g.motorCf[self.motorNo] = g.epmc.getCutOffFreq(self.motorNo)
     self.setCf = SetValueFrame(self.frame1, keyTextInit=f"*CF(Hz): ", valTextInit=g.motorCf[self.motorNo],
                                middleware_func=self.setCfFunc)
-    
 
-    isSussessful, g.motorMaxVel[self.motorNo] = g.epmc.getMaxVel(self.motorNo)
     self.setMaxVel = SetValueFrame(self.frame1, keyTextInit=f"*W_MAX(rad/s): ", valTextInit=g.motorMaxVel[self.motorNo],
                                    middleware_func=self.setMaxVelFunc)
     
@@ -88,10 +95,11 @@ class PidSetupFrame(tb.Frame):
   def setKpFunc(self, kp_val_str):
     try:
       if kp_val_str:
-        isSuccessful = g.epmc.setKp(self.motorNo, float(kp_val_str))
-        isSussessful, val = g.epmc.getKp(self.motorNo)
+        isSuccessful = g.epmc.setKp(self.motorNo, round(float(kp_val_str), 3))
+        val = g.epmc.getKp(self.motorNo)
         g.motorKp[self.motorNo] = val
-    except:
+    except EPMCSerialError as e:
+      print(e)
       pass
 
     return g.motorKp[self.motorNo]
@@ -100,10 +108,11 @@ class PidSetupFrame(tb.Frame):
   def setKiFunc(self, ki_val_str):
     try:
       if ki_val_str:
-        isSuccessful = g.epmc.setKi(self.motorNo, float(ki_val_str))
-        isSussessful, val = g.epmc.getKi(self.motorNo)
+        isSuccessful = g.epmc.setKi(self.motorNo, round(float(ki_val_str), 3))
+        val = g.epmc.getKi(self.motorNo)
         g.motorKi[self.motorNo] = val
-    except:
+    except EPMCSerialError as e:
+      print(e)
       pass
 
     return g.motorKi[self.motorNo]
@@ -112,10 +121,11 @@ class PidSetupFrame(tb.Frame):
   def setKdFunc(self, kd_val_str):
     try:
       if kd_val_str:
-        isSuccessful = g.epmc.setKd(self.motorNo, float(kd_val_str))
-        isSussessful, val = g.epmc.getKd(self.motorNo)
+        isSuccessful = g.epmc.setKd(self.motorNo, round(float(kd_val_str), 3))
+        val = g.epmc.getKd(self.motorNo)
         g.motorKd[self.motorNo] = val
-    except:
+    except EPMCSerialError as e:
+      print(e)
       pass
 
     return g.motorKd[self.motorNo]
@@ -124,10 +134,11 @@ class PidSetupFrame(tb.Frame):
   def setCfFunc(self, cf_val_str):
     try:
       if cf_val_str:
-        isSuccessful = g.epmc.setCutOffFreq(self.motorNo, float(cf_val_str))
-        isSussessful, val = g.epmc.getCutOffFreq(self.motorNo)
+        isSuccessful = g.epmc.setCutOffFreq(self.motorNo, round(float(cf_val_str), 3))
+        val = g.epmc.getCutOffFreq(self.motorNo)
         g.motorCf[self.motorNo] = val
-    except:
+    except EPMCSerialError as e:
+      print(e)
       pass
 
     return g.motorCf[self.motorNo]
@@ -136,10 +147,11 @@ class PidSetupFrame(tb.Frame):
   def setMaxVelFunc(self, vel_val_str):
     try:
       if vel_val_str:
-        isSuccessful = g.epmc.setMaxVel(self.motorNo, float(vel_val_str))
-        isSussessful, val = g.epmc.getMaxVel(self.motorNo)
+        isSuccessful = g.epmc.setMaxVel(self.motorNo, round(float(vel_val_str), 3))
+        val = g.epmc.getMaxVel(self.motorNo)
         g.motorMaxVel[self.motorNo] = val
-    except:
+    except EPMCSerialError as e:
+      print(e)
       pass
 
     return g.motorMaxVel[self.motorNo]
@@ -148,7 +160,7 @@ class PidSetupFrame(tb.Frame):
   def setTargetVelFunc(self, vel_val_str):
     try:
       if vel_val_str:
-        g.motorTargetMaxVel[self.motorNo] = float(vel_val_str)
+        g.motorTargetMaxVel[self.motorNo] = round(float(vel_val_str), 3)
     except:
       pass
 

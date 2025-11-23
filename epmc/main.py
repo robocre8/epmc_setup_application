@@ -1,6 +1,6 @@
 import tkinter as tk
-import ttkbootstrap as tb
-from ttkbootstrap.constants import *
+import ttkbootstrap as tb # type: ignore
+from ttkbootstrap.constants import * # type: ignore
 
 from epmc.globalParams import g
 from epmc.pages.SerialConnectPage import SerialConnectFrame

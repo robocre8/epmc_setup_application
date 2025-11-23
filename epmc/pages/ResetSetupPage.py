@@ -4,6 +4,7 @@ from ttkbootstrap.constants import *
 from ttkbootstrap.dialogs import Messagebox
 
 from epmc.globalParams import g
+from epmc.epmc import EPMCSerialError
 
 
 class ResetSetupFrame(tk.Frame):
@@ -44,5 +45,9 @@ class ResetSetupFrame(tk.Frame):
       Messagebox.show_error("INFO:\n\nOperation Was Cancelled", "ERROR")
 
   def resetAllParams(self):
-    isSuccessful = g.epmc.resetAllParams()
-    return isSuccessful
+    try:
+      isSuccessful = g.epmc.resetAllParams()
+      return isSuccessful
+    except EPMCSerialError as e:
+      print(e)
+      return False
