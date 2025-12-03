@@ -57,8 +57,3 @@ class SetValueFrame(tb.LabelFrame):
     else:
       updatedValue = self.middleware_func(entryValue)
       self.valText.configure(text=str(updatedValue))
-    
-
-
-
-

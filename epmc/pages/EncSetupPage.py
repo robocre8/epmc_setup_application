@@ -3,6 +3,7 @@ import ttkbootstrap as tb
 from ttkbootstrap.constants import *
 
 from epmc.globalParams import g
+from epmc.epmc import EPMCSerialError
 
 from epmc.components.SetValueFrame import SetValueFrame
 from epmc.components.SelectValueFrame import SelectValueFrame
@@ -28,7 +29,12 @@ class EncSetupFrame(tb.Frame):
     self.frame1.grid_columnconfigure((0,1,2,3), weight=1, uniform='a')
 
     #create widgets to be added to frame1
-    IsSuccessful, g.motorPPR[self.motorNo] = g.epmc.getPPR(self.motorNo)
+    try:
+      g.motorPPR[self.motorNo] = g.epmc.getPPR(self.motorNo)
+    except EPMCSerialError as e:
+      print(e)
+      pass
+
     self.setPulsePerRev = SetValueFrame(self.frame1, keyTextInit=f"*PPR: ", valTextInit=g.motorPPR[self.motorNo],
                                         middleware_func=self.setPulsePerRevFunc)
     
@@ -86,10 +92,11 @@ class EncSetupFrame(tb.Frame):
     try:
       if ppr_val_str:
         val = float(ppr_val_str)
-        IsSuccessful = g.epmc.setPPR(self.motorNo, val)
-        IsSuccessful, val = g.epmc.getPPR(self.motorNo)
+        isSuccessful = g.epmc.setPPR(self.motorNo, val)
+        val = g.epmc.getPPR(self.motorNo)
         g.motorPPR[self.motorNo] = val
-    except:
+    except EPMCSerialError as e:
+      print(e)
       pass
 
     return g.motorPPR[self.motorNo]
@@ -110,10 +117,10 @@ class EncSetupFrame(tb.Frame):
 
   def initDirConfigA(self):
     try:
-      isSuccessful, g.motorDirConfig[self.motorNo] = g.epmc.getRdir(self.motorNo)
-      if int(g.motorDirConfig[self.motorNo]) == 1:
+      g.motorDirConfig[self.motorNo] = g.epmc.getRdir(self.motorNo)
+      if g.motorDirConfig[self.motorNo] == 1:
         g.motorDirConfigText[self.motorNo] = g.dirConfigTextList[0]
-      elif int(g.motorDirConfig[self.motorNo]) == -1:
+      elif g.motorDirConfig[self.motorNo] == -1:
         g.motorDirConfigText[self.motorNo] = g.dirConfigTextList[1]
       self.resetInitialTheta()
     except:
@@ -127,18 +134,17 @@ class EncSetupFrame(tb.Frame):
         g.motorDirConfigText[self.motorNo] = dir_val_str
 
         if g.motorDirConfigText[self.motorNo] == g.dirConfigTextList[0]:
-          isSuccessful = g.epmc.setRdir(self.motorNo, 1.00)
-          isSuccessful, g.motorDirConfig[self.motorNo] = g.epmc.getRdir(self.motorNo)
+          isSuccessful = g.epmc.setRdir(self.motorNo, 1)
+          g.motorDirConfig[self.motorNo] = g.epmc.getRdir(self.motorNo)
           g.motorInitialTheta[self.motorNo] = -1*g.motorTheta[self.motorNo] - 90
           
         elif g.motorDirConfigText[self.motorNo] == g.dirConfigTextList[1]:
-          isSuccessful = g.epmc.setRdir(self.motorNo, -1.00)
-          isSuccessful, g.motorDirConfig[self.motorNo] = g.epmc.getRdir(self.motorNo)
+          isSuccessful = g.epmc.setRdir(self.motorNo, -1)
+          g.motorDirConfig[self.motorNo] = g.epmc.getRdir(self.motorNo)
           g.motorInitialTheta[self.motorNo] = -1*g.motorTheta[self.motorNo] + 90
         
-        
-
-    except:
+    except EPMCSerialError as e:
+      print(e)
       pass
 
     return g.motorDirConfigText[self.motorNo]

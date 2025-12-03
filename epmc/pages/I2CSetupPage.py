@@ -3,6 +3,7 @@ import ttkbootstrap as tb
 from ttkbootstrap.constants import *
 
 from epmc.globalParams import g
+from epmc.epmc import EPMCSerialError
 
 from epmc.components.SetValueFrame import SetValueFrame
 
@@ -16,7 +17,12 @@ class I2CSetupFrame(tb.Frame):
     self.frame = tb.Frame(self)
 
     #create widgets to be added to frame
-    IsSuccessful, g.i2cAddress = g.epmc.getI2cAddress()
+    try:
+      g.i2cAddress = g.epmc.getI2cAddress()
+    except EPMCSerialError as e:
+      print(e)
+      pass
+    
     self.setI2Caddress = SetValueFrame(self.frame, keyTextInit="*I2C_ADDRESS: ", valTextInit=g.i2cAddress,
                                 middleware_func=self.setI2CaddressFunc)
 
@@ -33,9 +39,10 @@ class I2CSetupFrame(tb.Frame):
     try:
       if text:
         isSuccessful = g.epmc.setI2cAddress(int(text))
-        IsSuccessful, val = g.epmc.getI2cAddress()
+        val = g.epmc.getI2cAddress()
         g.i2cAddress = val
-    except:
+    except EPMCSerialError as e:
+      print(e)
       pass
   
     return g.i2cAddress

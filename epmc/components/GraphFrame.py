@@ -2,9 +2,10 @@ import tkinter as tk
 import ttkbootstrap as tb
 from ttkbootstrap.constants import *
 
-import time
-
 from epmc.globalParams import g, selectSignal
+from epmc.epmc import EPMCSerialError
+
+import time
 
 
 class GraphFrame(tb.Frame):
@@ -26,10 +27,16 @@ class GraphFrame(tb.Frame):
     buttonStyle.configure(buttonStyleName, font=('Monospace',9, 'bold'))
 
     #---------------------------------------------------------------------#
-    isSuccessful, tvel = g.epmc.readTVel()
-    isSuccessful, vel = g.epmc.readVel()
-    g.motorTargetVel[self.motorNo] = round(tvel[self.motorNo],4)
-    g.motorActualVel[self.motorNo] = round(vel[self.motorNo],4)
+    try:
+      t_v0, t_v1 = g.epmc.readTVel()
+      tVel = [t_v0, t_v1]
+      v0, v1 = g.epmc.readVel()
+      vel = [v0, v1]
+      g.motorTargetVel[self.motorNo] = tVel[self.motorNo]
+      g.motorActualVel[self.motorNo] = vel[self.motorNo]
+    except EPMCSerialError as e:
+      print(e)
+      pass
     #---------------------------------------------------------------------#
 
     self.actualText = tb.Label(self.textFrame1, text="ACTUAL(rad/s):", font=('Monospace',10, 'bold') ,bootstyle="danger")
@@ -71,7 +78,7 @@ class GraphFrame(tb.Frame):
     self.canvasFrame.pack(side='top', expand=True, fill='both', pady=(10,0))
 
     # start plotting process
-    self.canvas.after(1, self.plot_graph)
+    self.canvas.after(10, self.plot_graph)
 
 
 
@@ -111,14 +118,22 @@ class GraphFrame(tb.Frame):
     self.plotLineBufferA = []
     self.plotLineBufferB = []
 
-    self.maxXVal = self.doPlotDuration
+    
+    
+    try:
+      self.maxXVal = self.doPlotDuration
+      self.maxYVal = 2*g.motorMaxVel[self.motorNo]
 
-    self.maxYVal = 2*g.motorMaxVel[self.motorNo]
+      self.xScale = self.xAxisLen/self.maxXVal
+      self.yScale = self.yAxisLen/self.maxYVal
+    except:
+      self.maxXVal = self.doPlotDuration
+      self.maxYVal = 2*10
 
-    self.xScale = self.xAxisLen/self.maxXVal
-    self.yScale = self.yAxisLen/self.maxYVal
+      self.xScale = self.xAxisLen/self.maxXVal
+      self.yScale = self.yAxisLen/self.maxYVal
 
-    self.signalType = 'step'
+    self.signalType = 'square'
 
 
 
@@ -128,7 +143,7 @@ class GraphFrame(tb.Frame):
 
     xAxisline = self.canvas.create_line(self.xStartOffsetPnt, self.h/2,
                                           self.xStartOffsetPnt+self.xAxisLen+self.xStopOffsetPnt, self.h/2,
-                                          fill="black",width=2)
+                                          fill="black",width=3)
     self.plotGraphBuffer.append(xAxisline)
     text = self.canvas.create_text(self.xStartOffsetPnt+self.xAxisLen+self.xStopOffsetPnt, (self.h/2)+15,
                                     text="(sec)", fill="green", font=('Monospace 7 bold'), angle=90.0)
@@ -136,7 +151,7 @@ class GraphFrame(tb.Frame):
     
     yAxisline = self.canvas.create_line(self.xStartOffsetPnt, 0,
                                           self.xStartOffsetPnt, self.h,
-                                          fill="black",width=2)
+                                          fill="black",width=3)
     self.plotGraphBuffer.append(yAxisline)
     text = self.canvas.create_text(self.xStartOffsetPnt-30, self.yStartOffsetPnt+8,
                                     text="(rad/s)", fill="green", font=('Helvetica 7 bold'), angle=90.0)
@@ -148,10 +163,10 @@ class GraphFrame(tb.Frame):
 
     for i in range(1,6):
       yTickVal = i/5*self.maxYVal
-      xAxisline = self.canvas.create_line(self.xStartOffsetPnt, (self.h/2)+((self.yScale/2)*yTickVal),
+      xTickAxisline = self.canvas.create_line(self.xStartOffsetPnt, (self.h/2)+((self.yScale/2)*yTickVal),
                                           self.xStartOffsetPnt+self.xAxisLen+self.xStopOffsetPnt, (self.h/2)+((self.yScale/2)*yTickVal),
-                                          fill="grey",width=0.1, dash=(1,3))
-      self.plotGraphBuffer.append(xAxisline)
+                                          fill="grey",width=1, dash=(1,3))
+      self.plotGraphBuffer.append(xTickAxisline)
       text = self.canvas.create_text(self.xStartOffsetPnt-15, (self.h/2)+((self.yScale/2)*yTickVal),
                                 text=str(round(-yTickVal/2, 2)), fill="black", font=('Helvetica 7 bold'))
       self.plotGraphBuffer.append(text)
@@ -159,20 +174,20 @@ class GraphFrame(tb.Frame):
 
     for i in range(1,6):
       yTickVal = i/5*self.maxYVal
-      xAxisline = self.canvas.create_line(self.xStartOffsetPnt, (self.h/2)-((self.yScale/2)*yTickVal),
+      xTickAxisline = self.canvas.create_line(self.xStartOffsetPnt, (self.h/2)-((self.yScale/2)*yTickVal),
                                           self.xStartOffsetPnt+self.xAxisLen+self.xStopOffsetPnt, (self.h/2)-((self.yScale/2)*yTickVal),
-                                          fill="grey",width=0.1, dash=(1,3))
-      self.plotGraphBuffer.append(xAxisline)
+                                          fill="grey",width=1, dash=(1,3))
+      self.plotGraphBuffer.append(xTickAxisline)
       text = self.canvas.create_text(self.xStartOffsetPnt-15, (self.h/2)-((self.yScale/2)*yTickVal),
                                 text=str(round(yTickVal/2, 2)), fill="black", font=('Helvetica 7 bold'))
       self.plotGraphBuffer.append(text)
     
     for i in range(1,21):
       xTickVal = i/20*self.maxXVal
-      yAxisline = self.canvas.create_line(self.xStartOffsetPnt+(self.xScale*xTickVal), 0,
+      yTickAxisline = self.canvas.create_line(self.xStartOffsetPnt+(self.xScale*xTickVal), 0,
                                                self.xStartOffsetPnt+(self.xScale*xTickVal), self.h,
-                                               fill="grey",width=0.1, dash=(1,3))
-      self.plotGraphBuffer.append(yAxisline)
+                                               fill="grey",width=1, dash=(1,3))
+      self.plotGraphBuffer.append(yTickAxisline)
       text = self.canvas.create_text(self.xStartOffsetPnt+(self.xScale*xTickVal), (self.h/2)+15,
                                 text=str(round(xTickVal, 2)), fill="black", font=('Helvetica 7 bold'), angle=90.0)
       self.plotGraphBuffer.append(text)
@@ -190,17 +205,17 @@ class GraphFrame(tb.Frame):
         self.deletePlot(self.plotLineBufferA, self.plotLineBufferB)
         self.plotButton.configure(text='START PLOT')
         self.clearPlot = False
-        # isSuccessful = g.epmc.setPidMode(self.motorNo, 0)
+        # isSussessful = g.epmc.setPidMode(0)
         time.sleep(0.1)
 
     elif self.doPlot:
         self.doPlot = False 
-        # isSuccessful = g.epmc.setPidMode(self.motorNo, 0)
+        # isSussessful = g.epmc.setPidMode(0)
         # print('stop plot')
     else:
         self.doPlot = True 
         self.doPlotTime = time.time()
-        # isSuccessful = g.epmc.setPidMode(self.motorNo, 1)
+        # isSussessful = g.epmc.setPidMode(1)
         # print('start plot')
 
 
@@ -232,7 +247,7 @@ class GraphFrame(tb.Frame):
           self.prevTime = 0.0
           self.t = time.time()
           # print('stop plot')
-          self.canvas.after(1, self.plot_graph)
+          self.canvas.after(10, self.plot_graph)
 
       elif self.doPlot:
           targetVel =selectSignal(type=g.motorTestSignal[self.motorNo],
@@ -258,16 +273,19 @@ class GraphFrame(tb.Frame):
             g.epmc.writeSpeed(0.0, targetVel)
           #---------------------------------------------------------------------#
 
+          #---------------------------------------------------------------------#
           try:
-            #---------------------------------------------------------------------#
-            isSuccessful, tvel = g.epmc.readTVel()
-            isSuccessful, vel = g.epmc.readVel()
-            g.motorTargetVel[self.motorNo] = round(tvel[self.motorNo],4)
-            g.motorActualVel[self.motorNo] = round(vel[self.motorNo],4)
-            #---------------------------------------------------------------------#
-            
-          except:
+            t_v0, t_v1 = g.epmc.readTVel()
+            tVel = [t_v0, t_v1]
+            v0, v1 = g.epmc.readVel()
+            vel = [v0, v1]
+            g.motorTargetVel[self.motorNo] = tVel[self.motorNo]
+            g.motorActualVel[self.motorNo] = vel[self.motorNo]
+          except EPMCSerialError as e:
+            print(e)
             pass
+          #---------------------------------------------------------------------#
+            
 
           self.currValA = g.motorTargetVel[self.motorNo]
           self.currValB = g.motorActualVel[self.motorNo]
@@ -276,10 +294,10 @@ class GraphFrame(tb.Frame):
           # primary "#4582EC" danger "#D9534F"
           lineA = self.canvas.create_line(self.xStartOffsetPnt+(self.prevTime*self.xScale),-self.yScale*self.prevValA+self.h/2,
                                            self.xStartOffsetPnt+(self.currTime*self.xScale), -self.yScale*self.currValA+self.h/2,
-                                           fill="#4582EC", width=1)
+                                           fill="#4582EC", width=2)
           lineB = self.canvas.create_line(self.xStartOffsetPnt+(self.prevTime*self.xScale),-self.yScale*self.prevValB+self.h/2,
                                            self.xStartOffsetPnt+(self.currTime*self.xScale), -self.yScale*self.currValB+self.h/2,
-                                           fill="#D9534F", width=1)
+                                           fill="#D9534F", width=2)
           
           self.targetVal.configure(text=g.motorTargetVel[self.motorNo])
 
@@ -296,7 +314,7 @@ class GraphFrame(tb.Frame):
 
           self.prevTime = self.currTime
           
-          self.canvas.after(1, self.plot_graph)
+          self.canvas.after(10, self.plot_graph)
 
       else:
           if g.motorIsOn[self.motorNo]:
@@ -312,4 +330,4 @@ class GraphFrame(tb.Frame):
           self.currTime = 0.0
           self.prevTime = 0.0
           self.t = time.time()
-          self.canvas.after(1, self.plot_graph)
+          self.canvas.after(10, self.plot_graph)
