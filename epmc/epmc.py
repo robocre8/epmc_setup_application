@@ -1,9 +1,9 @@
 import serial
 import struct
 
-class EPMCSerialError(Exception):
-        """Custom exception for for EPMC Comm failure"""
-        pass
+# class EPMCSerialError(Exception):
+#         """Custom exception for for EPMC Comm failure"""
+#         pass
 
 
 # Serial Protocol Command IDs -------------
@@ -70,8 +70,8 @@ class EPMC:
         payload = self.ser.read(4)
         if len(payload) != 4:
             return 0.0
-            print("[EPMC SERIAL ERROR]: Timeout while reading 1 values")
-            raise EPMCSerialError("[EPMC SERIAL ERROR]: Timeout while reading 1 value")
+            # print("[EPMC SERIAL ERROR]: Timeout while reading 1 values")
+            # raise EPMCSerialError("[EPMC SERIAL ERROR]: Timeout while reading 1 value")
 
         # Unpack 4 bytes as little-endian float
         (val,) = struct.unpack('<f', payload)
@@ -85,8 +85,8 @@ class EPMC:
         payload = self.ser.read(8)
         if len(payload) != 8:
             return 0.0, 0.0
-            print("[EPMC SERIAL ERROR]: Timeout while reading 2 values")
-            raise EPMCSerialError("[EPMC SERIAL ERROR]: Timeout while reading 2 values")
+            # print("[EPMC SERIAL ERROR]: Timeout while reading 2 values")
+            # raise EPMCSerialError("[EPMC SERIAL ERROR]: Timeout while reading 2 values")
 
         # Unpack 4 bytes as little-endian float
         a, b = struct.unpack('<ff', payload)
@@ -100,8 +100,8 @@ class EPMC:
         payload = self.ser.read(16)
         if len(payload) != 16:
             return 0.0, 0.0, 0.0, 0.0
-            print("[EPMC SERIAL ERROR]: Timeout while reading 4 values")
-            raise EPMCSerialError("[EPMC SERIAL ERROR]: Timeout while reading 4 values")
+            # print("[EPMC SERIAL ERROR]: Timeout while reading 4 values")
+            # raise EPMCSerialError("[EPMC SERIAL ERROR]: Timeout while reading 4 values")
 
         # Unpack 4 bytes as little-endian float
         a, b, c, d = struct.unpack('<ffff', payload)
