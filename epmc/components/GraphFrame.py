@@ -26,15 +26,15 @@ class GraphFrame(tb.Frame):
     buttonStyle.configure(buttonStyleName, font=('Monospace',9, 'bold'))
 
     #---------------------------------------------------------------------#
-    try:
-      t_v0, t_v1 = g.epmc.readTVel()
+    success, t_v0, t_v1 = g.epmc.readTVel()
+    if success:
       tVel = [t_v0, t_v1]
-      v0, v1 = g.epmc.readVel()
-      vel = [v0, v1]
       g.motorTargetVel[self.motorNo] = tVel[self.motorNo]
+
+    success, v0, v1 = g.epmc.readVel()
+    if success:
+      vel = [v0, v1]
       g.motorActualVel[self.motorNo] = vel[self.motorNo]
-    except:
-      pass
     #---------------------------------------------------------------------#
 
     self.actualText = tb.Label(self.textFrame1, text="ACTUAL(rad/s):", font=('Monospace',10, 'bold') ,bootstyle="danger")
@@ -116,20 +116,11 @@ class GraphFrame(tb.Frame):
     self.plotLineBufferA = []
     self.plotLineBufferB = []
 
-    
-    
-    try:
-      self.maxXVal = self.doPlotDuration
-      self.maxYVal = 2*g.motorMaxVel[self.motorNo]
+    self.maxXVal = self.doPlotDuration
+    self.maxYVal = 2*g.motorMaxVel[self.motorNo]
 
-      self.xScale = self.xAxisLen/self.maxXVal
-      self.yScale = self.yAxisLen/self.maxYVal
-    except:
-      self.maxXVal = self.doPlotDuration
-      self.maxYVal = 2*10
-
-      self.xScale = self.xAxisLen/self.maxXVal
-      self.yScale = self.yAxisLen/self.maxYVal
+    self.xScale = self.xAxisLen/self.maxXVal
+    self.yScale = self.yAxisLen/self.maxYVal
 
     self.signalType = 'square'
 
@@ -203,17 +194,17 @@ class GraphFrame(tb.Frame):
         self.deletePlot(self.plotLineBufferA, self.plotLineBufferB)
         self.plotButton.configure(text='START PLOT')
         self.clearPlot = False
-        # isSussessful = g.epmc.setPidMode(0)
+        # g.epmc.setPidMode(0)
         time.sleep(0.1)
 
     elif self.doPlot:
         self.doPlot = False 
-        # isSussessful = g.epmc.setPidMode(0)
+        # g.epmc.setPidMode(0)
         # print('stop plot')
     else:
         self.doPlot = True 
         self.doPlotTime = time.time()
-        # isSussessful = g.epmc.setPidMode(1)
+        # g.epmc.setPidMode(1)
         # print('start plot')
 
 
@@ -272,15 +263,15 @@ class GraphFrame(tb.Frame):
           #---------------------------------------------------------------------#
 
           #---------------------------------------------------------------------#
-          try:
-            t_v0, t_v1 = g.epmc.readTVel()
+          success, t_v0, t_v1 = g.epmc.readTVel()
+          if success:
             tVel = [t_v0, t_v1]
-            v0, v1 = g.epmc.readVel()
-            vel = [v0, v1]
             g.motorTargetVel[self.motorNo] = tVel[self.motorNo]
+
+          success, v0, v1 = g.epmc.readVel()
+          if success:
+            vel = [v0, v1]
             g.motorActualVel[self.motorNo] = vel[self.motorNo]
-          except:
-            pass
           #---------------------------------------------------------------------#
             
 

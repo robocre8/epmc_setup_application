@@ -29,15 +29,15 @@ class MotorDrawFrame(tb.Frame):
     buttonStyle.configure(buttonStyleName, font=('Monospace',10, 'bold'))
 
     #---------------------------------------------------------------------#
-    try:
-      pos0, pos1 = g.epmc.readPos()
+    success, pos0, pos1 = g.epmc.readPos()
+    if success:
       pos=[pos0, pos1]
-      v0, v1 = g.epmc.readVel()
-      v=[v0, v1]
       g.motorAngPos[self.motorNo] = pos[self.motorNo]
+
+    success, v0, v1 = g.epmc.readVel()
+    if success:
+      v=[v0, v1]
       g.motorAngVel[self.motorNo] = v[self.motorNo]
-    except:
-      pass
     #---------------------------------------------------------------------#
       
 
@@ -121,15 +121,15 @@ class MotorDrawFrame(tb.Frame):
     self.canvas.delete(self.mid_circle)
 
     #---------------------------------------------------------------------#
-    try:
-      pos0, pos1 = g.epmc.readPos()
+    success, pos0, pos1 = g.epmc.readPos()
+    if success:
       pos=[pos0, pos1]
-      v0, v1 = g.epmc.readVel()
-      v=[v0, v1]
       g.motorAngPos[self.motorNo] = pos[self.motorNo]
+
+    success, v0, v1 = g.epmc.readVel()
+    if success:
+      v=[v0, v1]
       g.motorAngVel[self.motorNo] = v[self.motorNo]
-    except:
-      pass
     #---------------------------------------------------------------------#
 
     g.motorTheta[self.motorNo] = round(self.absAngDeg(g.motorAngPos[self.motorNo]),2)

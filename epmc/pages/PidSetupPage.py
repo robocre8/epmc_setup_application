@@ -17,16 +17,25 @@ class PidSetupFrame(tb.Frame):
 
     self.motorNo = motorNo
 
-    try:
-      g.motorKp[self.motorNo] = g.epmc.getKp(self.motorNo)
-      g.motorKi[self.motorNo] = g.epmc.getKi(self.motorNo)
-      g.motorKd[self.motorNo] = g.epmc.getKd(self.motorNo)
-      g.motorCf[self.motorNo] = g.epmc.getCutOffFreq(self.motorNo)
-      g.motorMaxVel[self.motorNo] = g.epmc.getMaxVel(self.motorNo)
-    except:
-      g.motorMaxVel[self.motorNo] = 10
-      print("Default Max Vel back to 10")
-      pass
+    success, kp = g.epmc.getKp(self.motorNo)
+    if success:
+      g.motorKp[self.motorNo] = kp
+
+    success, ki = g.epmc.getKi(self.motorNo)
+    if success:
+      g.motorKi[self.motorNo] = ki
+
+    success, kd = g.epmc.getKd(self.motorNo)
+    if success:
+      g.motorKd[self.motorNo] = kd
+
+    success, cf = g.epmc.getCutOffFreq(self.motorNo)
+    if success:
+      g.motorCf[self.motorNo] = cf
+
+    success, max_vel = g.epmc.getMaxVel(self.motorNo)
+    if success:
+      g.motorMaxVel[self.motorNo] = max_vel
 
     self.label = tb.Label(self, text=f"MOTOR {self.motorNo} PID SETUP", font=('Monospace',16, 'bold') ,bootstyle="dark")
 
@@ -92,91 +101,72 @@ class PidSetupFrame(tb.Frame):
  
 
   def setKpFunc(self, kp_val_str):
-    try:
-      if kp_val_str:
-        isSuccessful = g.epmc.setKp(self.motorNo, round(float(kp_val_str), 3))
-        val = g.epmc.getKp(self.motorNo)
+    if kp_val_str:
+      g.epmc.setKp(self.motorNo, round(float(kp_val_str), 3))
+      success, val = g.epmc.getKp(self.motorNo)
+      if success:
         g.motorKp[self.motorNo] = val
-    except:
-      pass
 
     return g.motorKp[self.motorNo]
   
 
   def setKiFunc(self, ki_val_str):
-    try:
-      if ki_val_str:
-        isSuccessful = g.epmc.setKi(self.motorNo, round(float(ki_val_str), 3))
-        val = g.epmc.getKi(self.motorNo)
+    if ki_val_str:
+      g.epmc.setKi(self.motorNo, round(float(ki_val_str), 3))
+      success, val = g.epmc.getKi(self.motorNo)
+      if success:
         g.motorKi[self.motorNo] = val
-    except:
-      pass
 
     return g.motorKi[self.motorNo]
   
 
   def setKdFunc(self, kd_val_str):
-    try:
-      if kd_val_str:
-        isSuccessful = g.epmc.setKd(self.motorNo, round(float(kd_val_str), 3))
-        val = g.epmc.getKd(self.motorNo)
+    if kd_val_str:
+      g.epmc.setKd(self.motorNo, round(float(kd_val_str), 3))
+      success, val = g.epmc.getKd(self.motorNo)
+      if success:
         g.motorKd[self.motorNo] = val
-    except:
-      pass
 
     return g.motorKd[self.motorNo]
   
 
   def setCfFunc(self, cf_val_str):
-    try:
-      if cf_val_str:
-        isSuccessful = g.epmc.setCutOffFreq(self.motorNo, round(float(cf_val_str), 3))
-        val = g.epmc.getCutOffFreq(self.motorNo)
+    if cf_val_str:
+      g.epmc.setCutOffFreq(self.motorNo, round(float(cf_val_str), 3))
+      success, val = g.epmc.getCutOffFreq(self.motorNo)
+      if success:
         g.motorCf[self.motorNo] = val
-    except:
-      pass
 
     return g.motorCf[self.motorNo]
 
   
   def setMaxVelFunc(self, vel_val_str):
-    try:
-      if vel_val_str:
-        isSuccessful = g.epmc.setMaxVel(self.motorNo, round(float(vel_val_str), 3))
-        val = g.epmc.getMaxVel(self.motorNo)
+    if vel_val_str:
+      g.epmc.setMaxVel(self.motorNo, round(float(vel_val_str), 3))
+      success, val = g.epmc.getMaxVel(self.motorNo)
+      if success:
         g.motorMaxVel[self.motorNo] = val
-    except:
-      pass
 
     return g.motorMaxVel[self.motorNo]
   
 
   def setTargetVelFunc(self, vel_val_str):
-    try:
-      if vel_val_str:
-        g.motorTargetMaxVel[self.motorNo] = round(float(vel_val_str), 3)
-    except:
-      pass
+    if vel_val_str:
+      g.motorTargetMaxVel[self.motorNo] = round(float(vel_val_str), 3)
 
     return g.motorTargetMaxVel[self.motorNo]
   
 
   def selectSignalFunc(self, signal_val_str):
-    try:
-      if signal_val_str:
-        g.motorTestSignal[self.motorNo] = signal_val_str
-    except:
-      pass
+    if signal_val_str:
+      g.motorTestSignal[self.motorNo] = signal_val_str
 
     return g.motorTestSignal[self.motorNo]
   
 
   # def selectDurationFunc(self, duration_val_str):
-  #   try:
   #     if duration_val_str:
   #       val = int(duration_val_str)
   #       g.motorTestDuration[self.motorNo] = val
-  #   except:
-  #     pass
 
-  #   return g.motorTestDuration[self.motorNo]
+  #     return g.motorTestDuration[self.motorNo]

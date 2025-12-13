@@ -28,10 +28,9 @@ class EncSetupFrame(tb.Frame):
     self.frame1.grid_columnconfigure((0,1,2,3), weight=1, uniform='a')
 
     #create widgets to be added to frame1
-    try:
-      g.motorPPR[self.motorNo] = g.epmc.getPPR(self.motorNo)
-    except:
-      pass
+    success, ppr = g.epmc.getPPR(self.motorNo)
+    if success:
+      g.motorPPR[self.motorNo] = ppr
 
     self.setPulsePerRev = SetValueFrame(self.frame1, keyTextInit=f"*PPR: ", valTextInit=g.motorPPR[self.motorNo],
                                         middleware_func=self.setPulsePerRevFunc)
@@ -87,61 +86,57 @@ class EncSetupFrame(tb.Frame):
 
 
   def setPulsePerRevFunc(self, ppr_val_str):
-    try:
-      if ppr_val_str:
-        val = float(ppr_val_str)
-        isSuccessful = g.epmc.setPPR(self.motorNo, val)
-        val = g.epmc.getPPR(self.motorNo)
+    if ppr_val_str:
+      val = float(ppr_val_str)
+      g.epmc.setPPR(self.motorNo, val)
+      success, val = g.epmc.getPPR(self.motorNo)
+      if success:
         g.motorPPR[self.motorNo] = val
-    except:
-      pass
 
     return g.motorPPR[self.motorNo]
 
   
 
   def selectDurationFunc(self, duration_val_str):
-    try:
-      if duration_val_str:
-        val = int(duration_val_str)
-        g.motorTestDuration[self.motorNo] = val
-    except:
-      pass
+    if duration_val_str:
+      val = int(duration_val_str)
+      g.motorTestDuration[self.motorNo] = val
 
     return g.motorTestDuration[self.motorNo]
   
 
 
   def initDirConfigA(self):
-    try:
-      g.motorDirConfig[self.motorNo] = g.epmc.getRdir(self.motorNo)
-      if g.motorDirConfig[self.motorNo] == 1:
-        g.motorDirConfigText[self.motorNo] = g.dirConfigTextList[0]
-      elif g.motorDirConfig[self.motorNo] == -1:
-        g.motorDirConfigText[self.motorNo] = g.dirConfigTextList[1]
-      self.resetInitialTheta()
-    except:
-      pass
+    success, rdir = g.epmc.getRdir(self.motorNo)
+    if success:
+      g.motorDirConfig[self.motorNo] = rdir
+
+    if g.motorDirConfig[self.motorNo] == 1:
+      g.motorDirConfigText[self.motorNo] = g.dirConfigTextList[0]
+    elif g.motorDirConfig[self.motorNo] == -1:
+      g.motorDirConfigText[self.motorNo] = g.dirConfigTextList[1]
+      
+    self.resetInitialTheta()
 
 
 
   def selectDirConfigFunc(self, dir_val_str):
-    try:
-      if dir_val_str:
-        g.motorDirConfigText[self.motorNo] = dir_val_str
+    if dir_val_str:
+      g.motorDirConfigText[self.motorNo] = dir_val_str
 
-        if g.motorDirConfigText[self.motorNo] == g.dirConfigTextList[0]:
-          isSuccessful = g.epmc.setRdir(self.motorNo, 1)
-          g.motorDirConfig[self.motorNo] = g.epmc.getRdir(self.motorNo)
-          g.motorInitialTheta[self.motorNo] = -1*g.motorTheta[self.motorNo] - 90
-          
-        elif g.motorDirConfigText[self.motorNo] == g.dirConfigTextList[1]:
-          isSuccessful = g.epmc.setRdir(self.motorNo, -1)
-          g.motorDirConfig[self.motorNo] = g.epmc.getRdir(self.motorNo)
-          g.motorInitialTheta[self.motorNo] = -1*g.motorTheta[self.motorNo] + 90
+      if g.motorDirConfigText[self.motorNo] == g.dirConfigTextList[0]:
+        g.epmc.setRdir(self.motorNo, 1)
+        success, rdir = g.epmc.getRdir(self.motorNo)
+        if success:
+          g.motorDirConfig[self.motorNo] = rdir
+        g.motorInitialTheta[self.motorNo] = -1*g.motorTheta[self.motorNo] - 90
         
-    except:
-      pass
+      elif g.motorDirConfigText[self.motorNo] == g.dirConfigTextList[1]:
+        g.epmc.setRdir(self.motorNo, -1)
+        success, rdir = g.epmc.getRdir(self.motorNo)
+        if success:
+          g.motorDirConfig[self.motorNo] = rdir
+        g.motorInitialTheta[self.motorNo] = -1*g.motorTheta[self.motorNo] + 90
 
     return g.motorDirConfigText[self.motorNo]
 

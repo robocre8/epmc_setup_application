@@ -71,9 +71,9 @@ class SerialConnectFrame(tb.Frame):
   def connectToPort(self, port):
     try:
       g.epmc = EPMC(port)
-      time.sleep(3)
-      isSuccessful = g.epmc.setCmdTimeout(0)
-      isSuccessful = g.epmc.clearDataBuffer()
+      time.sleep(4)
+      g.epmc.setCmdTimeout(0)
+      success = g.epmc.clearDataBuffer()
       return True
     except:
       return False
