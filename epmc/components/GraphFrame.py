@@ -3,7 +3,6 @@ import ttkbootstrap as tb
 from ttkbootstrap.constants import *
 
 from epmc.globalParams import g, selectSignal
-from epmc.epmc import EPMCSerialError
 
 import time
 
@@ -34,8 +33,7 @@ class GraphFrame(tb.Frame):
       vel = [v0, v1]
       g.motorTargetVel[self.motorNo] = tVel[self.motorNo]
       g.motorActualVel[self.motorNo] = vel[self.motorNo]
-    except EPMCSerialError as e:
-      print(e)
+    except:
       pass
     #---------------------------------------------------------------------#
 
@@ -281,8 +279,7 @@ class GraphFrame(tb.Frame):
             vel = [v0, v1]
             g.motorTargetVel[self.motorNo] = tVel[self.motorNo]
             g.motorActualVel[self.motorNo] = vel[self.motorNo]
-          except EPMCSerialError as e:
-            print(e)
+          except:
             pass
           #---------------------------------------------------------------------#
             

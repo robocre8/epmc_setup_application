@@ -3,7 +3,6 @@ import ttkbootstrap as tb
 from ttkbootstrap.constants import *
 
 from epmc.globalParams import g
-from epmc.epmc import EPMCSerialError
 
 from math import sin, cos, radians, pi
 import time
@@ -37,8 +36,7 @@ class MotorDrawFrame(tb.Frame):
       v=[v0, v1]
       g.motorAngPos[self.motorNo] = pos[self.motorNo]
       g.motorAngVel[self.motorNo] = v[self.motorNo]
-    except EPMCSerialError as e:
-      print(e)
+    except:
       pass
     #---------------------------------------------------------------------#
       
@@ -130,8 +128,7 @@ class MotorDrawFrame(tb.Frame):
       v=[v0, v1]
       g.motorAngPos[self.motorNo] = pos[self.motorNo]
       g.motorAngVel[self.motorNo] = v[self.motorNo]
-    except EPMCSerialError as e:
-      print(e)
+    except:
       pass
     #---------------------------------------------------------------------#
 

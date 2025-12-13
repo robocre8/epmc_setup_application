@@ -4,7 +4,6 @@ from ttkbootstrap.constants import *
 from ttkbootstrap.dialogs import Messagebox
 
 from epmc.globalParams import g
-from epmc.epmc import EPMCSerialError
 
 
 class ResetSetupFrame(tk.Frame):
@@ -48,6 +47,5 @@ class ResetSetupFrame(tk.Frame):
     try:
       isSuccessful = g.epmc.resetAllParams()
       return isSuccessful
-    except EPMCSerialError as e:
-      print(e)
+    except:
       return False

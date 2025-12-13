@@ -3,7 +3,6 @@ import ttkbootstrap as tb
 from ttkbootstrap.constants import *
 
 from epmc.globalParams import g
-from epmc.epmc import EPMCSerialError
 
 from epmc.components.SetValueFrame import SetValueFrame
 from epmc.components.SelectValueFrame import SelectValueFrame
@@ -24,9 +23,9 @@ class PidSetupFrame(tb.Frame):
       g.motorKd[self.motorNo] = g.epmc.getKd(self.motorNo)
       g.motorCf[self.motorNo] = g.epmc.getCutOffFreq(self.motorNo)
       g.motorMaxVel[self.motorNo] = g.epmc.getMaxVel(self.motorNo)
-    except EPMCSerialError as e:
+    except:
       g.motorMaxVel[self.motorNo] = 10
-      print(e, "Default Max Vel back to 10")
+      print("Default Max Vel back to 10")
       pass
 
     self.label = tb.Label(self, text=f"MOTOR {self.motorNo} PID SETUP", font=('Monospace',16, 'bold') ,bootstyle="dark")
@@ -98,8 +97,7 @@ class PidSetupFrame(tb.Frame):
         isSuccessful = g.epmc.setKp(self.motorNo, round(float(kp_val_str), 3))
         val = g.epmc.getKp(self.motorNo)
         g.motorKp[self.motorNo] = val
-    except EPMCSerialError as e:
-      print(e)
+    except:
       pass
 
     return g.motorKp[self.motorNo]
@@ -111,8 +109,7 @@ class PidSetupFrame(tb.Frame):
         isSuccessful = g.epmc.setKi(self.motorNo, round(float(ki_val_str), 3))
         val = g.epmc.getKi(self.motorNo)
         g.motorKi[self.motorNo] = val
-    except EPMCSerialError as e:
-      print(e)
+    except:
       pass
 
     return g.motorKi[self.motorNo]
@@ -124,8 +121,7 @@ class PidSetupFrame(tb.Frame):
         isSuccessful = g.epmc.setKd(self.motorNo, round(float(kd_val_str), 3))
         val = g.epmc.getKd(self.motorNo)
         g.motorKd[self.motorNo] = val
-    except EPMCSerialError as e:
-      print(e)
+    except:
       pass
 
     return g.motorKd[self.motorNo]
@@ -137,8 +133,7 @@ class PidSetupFrame(tb.Frame):
         isSuccessful = g.epmc.setCutOffFreq(self.motorNo, round(float(cf_val_str), 3))
         val = g.epmc.getCutOffFreq(self.motorNo)
         g.motorCf[self.motorNo] = val
-    except EPMCSerialError as e:
-      print(e)
+    except:
       pass
 
     return g.motorCf[self.motorNo]
@@ -150,8 +145,7 @@ class PidSetupFrame(tb.Frame):
         isSuccessful = g.epmc.setMaxVel(self.motorNo, round(float(vel_val_str), 3))
         val = g.epmc.getMaxVel(self.motorNo)
         g.motorMaxVel[self.motorNo] = val
-    except EPMCSerialError as e:
-      print(e)
+    except:
       pass
 
     return g.motorMaxVel[self.motorNo]

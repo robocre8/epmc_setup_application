@@ -3,7 +3,6 @@ import ttkbootstrap as tb
 from ttkbootstrap.constants import *
 
 from epmc.globalParams import g
-from epmc.epmc import EPMCSerialError
 
 from epmc.components.SetValueFrame import SetValueFrame
 from epmc.components.SelectValueFrame import SelectValueFrame
@@ -31,8 +30,7 @@ class EncSetupFrame(tb.Frame):
     #create widgets to be added to frame1
     try:
       g.motorPPR[self.motorNo] = g.epmc.getPPR(self.motorNo)
-    except EPMCSerialError as e:
-      print(e)
+    except:
       pass
 
     self.setPulsePerRev = SetValueFrame(self.frame1, keyTextInit=f"*PPR: ", valTextInit=g.motorPPR[self.motorNo],
@@ -95,8 +93,7 @@ class EncSetupFrame(tb.Frame):
         isSuccessful = g.epmc.setPPR(self.motorNo, val)
         val = g.epmc.getPPR(self.motorNo)
         g.motorPPR[self.motorNo] = val
-    except EPMCSerialError as e:
-      print(e)
+    except:
       pass
 
     return g.motorPPR[self.motorNo]
@@ -143,8 +140,7 @@ class EncSetupFrame(tb.Frame):
           g.motorDirConfig[self.motorNo] = g.epmc.getRdir(self.motorNo)
           g.motorInitialTheta[self.motorNo] = -1*g.motorTheta[self.motorNo] + 90
         
-    except EPMCSerialError as e:
-      print(e)
+    except:
       pass
 
     return g.motorDirConfigText[self.motorNo]

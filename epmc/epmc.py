@@ -2,8 +2,8 @@ import serial
 import struct
 
 # class EPMCSerialError(Exception):
-#         """Custom exception for for EPMC Comm failure"""
-#         pass
+#     """Custom exception for for EPMC Comm failure"""
+#     pass
 
 
 # Serial Protocol Command IDs -------------
