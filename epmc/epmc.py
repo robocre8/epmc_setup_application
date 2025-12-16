@@ -42,8 +42,15 @@ CLEAR_DATA_BUFFER = 0x2C
 
 
 class EPMC:
-    def __init__(self, port, baud=115200, timeOut=0.1):
+    def __init__(self):
+        pass
+
+    def connect(self, port, baud=56700, timeOut=0.1):
         self.ser = serial.Serial(port, baud, timeout=timeOut)
+
+    def disconnect(self):
+        if self.ser.is_open:
+            self.ser.close()
     
     #------------------------------------------------------------------------
     def send_packet_without_payload(self, cmd, length=0):
@@ -67,59 +74,66 @@ class EPMC:
         Reads 4 bytes from the serial port and converts to a float (little-endian).
         Returns (success, value-array)
         """
-        payload = self.ser.read(4)
-        if len(payload) != 4:
-            return 0.0
-            # print("[EPMC SERIAL ERROR]: Timeout while reading 1 values")
-            # raise EPMCSerialError("[EPMC SERIAL ERROR]: Timeout while reading 1 value")
+        try:
+            payload = self.ser.read(4)
+            if len(payload) != 4:
+                # print("[EPMC SERIAL ERROR]: Timeout while reading 1 values")
+                return False, 0.0
 
-        # Unpack 4 bytes as little-endian float
-        (val,) = struct.unpack('<f', payload)
-        return val
+            # Unpack 4 bytes as little-endian float
+            (val,) = struct.unpack('<f', payload)
+            return True, val
+        except:
+            # print("[PYSERIAL ERROR]: Read Timeout")
+            return False, 0.0
     
     def read_packet2(self):
         """
         Reads 8 bytes from the serial port and converts to a float (little-endian).
         Returns (success, value-array)
         """
-        payload = self.ser.read(8)
-        if len(payload) != 8:
-            return 0.0, 0.0
-            # print("[EPMC SERIAL ERROR]: Timeout while reading 2 values")
-            # raise EPMCSerialError("[EPMC SERIAL ERROR]: Timeout while reading 2 values")
+        try:
+            payload = self.ser.read(8)
+            if len(payload) != 8:
+                # print("[EPMC SERIAL ERROR]: Timeout while reading 2 values")
+                return False, 0.0, 0.0
 
-        # Unpack 4 bytes as little-endian float
-        a, b = struct.unpack('<ff', payload)
-        return a, b
+            # Unpack 4 bytes as little-endian float
+            a, b = struct.unpack('<ff', payload)
+            return True, a, b
+        except:
+            # print("[PYSERIAL ERROR]: Read Timeout")
+            return False, 0.0, 0.0
     
     def read_packet4(self):
         """
         Reads 16 bytes from the serial port and converts to a float (little-endian).
         Returns (success, value-array)
         """
-        payload = self.ser.read(16)
-        if len(payload) != 16:
-            return 0.0, 0.0, 0.0, 0.0
-            # print("[EPMC SERIAL ERROR]: Timeout while reading 4 values")
-            # raise EPMCSerialError("[EPMC SERIAL ERROR]: Timeout while reading 4 values")
+        try:
+            payload = self.ser.read(16)
+            if len(payload) != 16:
+                # print("[EPMC SERIAL ERROR]: Timeout while reading 4 values")
+                return False, 0.0, 0.0, 0.0, 0.0
 
-        # Unpack 4 bytes as little-endian float
-        a, b, c, d = struct.unpack('<ffff', payload)
-        return a, b, c, d
+            # Unpack 4 bytes as little-endian float
+            a, b, c, d = struct.unpack('<ffff', payload)
+            return True, a, b, c, d
+        except:
+            # print("[PYSERIAL ERROR]: Read Timeout")
+            return False, 0.0, 0.0, 0.0, 0.0
     
     #---------------------------------------------------------------------
 
     def write_data1(self, cmd, val, pos=100):
         payload = struct.pack('<Bf', pos, val)
         self.send_packet_with_payload(cmd, payload)
-        val = self.read_packet1()
-        return val
 
     def read_data1(self, cmd, pos=100):
         payload = struct.pack('<Bf', pos, 0.0)  # big-endian
         self.send_packet_with_payload(cmd, payload)
-        val = self.read_packet1()
-        return val
+        success, val = self.read_packet1()
+        return success, val
     
     def write_data2(self, cmd, a, b):
         payload = struct.pack('<ff', a, b) 
@@ -127,13 +141,13 @@ class EPMC:
 
     def read_data2(self, cmd):
         self.send_packet_without_payload(cmd, length=8)
-        a, b = self.read_packet2()
-        return a, b
+        success, a, b = self.read_packet2()
+        return success, a, b
 
     def read_data4(self, cmd):
         self.send_packet_without_payload(cmd, length=16)
-        a, b, c, d = self.read_packet4()
-        return a, b, c, d
+        suceess, a, b, c, d = self.read_packet4()
+        return suceess, a, b, c, d
     
     #---------------------------------------------------------------------
     def writeSpeed(self, v0, v1):
@@ -143,124 +157,107 @@ class EPMC:
         self.write_data2(WRITE_PWM, pwm0, pwm1)
     
     def readPos(self):
-        pos0, pos1 = self.read_data2(READ_POS)
-        return round(pos0, 4), round(pos1, 4)
+        success, pos0, pos1 = self.read_data2(READ_POS)
+        return success, round(pos0, 4), round(pos1, 4)
     
     def readVel(self):
-        vel0, vel1 = self.read_data2(READ_VEL)
-        return round(vel0, 4), round(vel1, 4)
+        success, vel0, vel1 = self.read_data2(READ_VEL)
+        return success, round(vel0, 4), round(vel1, 4)
     
     def readUVel(self):
-        vel0, vel1 = self.read_data2(READ_UVEL)
-        return round(vel0, 4), round(vel1, 4)
+        success, vel0, vel1 = self.read_data2(READ_UVEL)
+        return success, round(vel0, 4), round(vel1, 4)
     
     def readTVel(self):
-        vel0, vel1 = self.read_data2(READ_TVEL)
-        return round(vel0, 4), round(vel1, 4)
+        success, vel0, vel1 = self.read_data2(READ_TVEL)
+        return success, round(vel0, 4), round(vel1, 4)
     
     def setCmdTimeout(self, timeout):
-        res = self.write_data1(SET_CMD_TIMEOUT, timeout)
-        return int(res)
+        self.write_data1(SET_CMD_TIMEOUT, timeout)
         
     def getCmdTimeout(self):
-        timeout = self.read_data1(GET_CMD_TIMEOUT)
-        return int(timeout)
+        success, timeout = self.read_data1(GET_CMD_TIMEOUT)
+        return success, int(timeout)
     
     def setPidMode(self, mode):
-        res = self.write_data1(SET_PID_MODE, mode)
-        res = True if int(res) == 1 else False
-        return res
+        self.write_data1(SET_PID_MODE, mode)
     
     def getPidMode(self):
-        mode = self.read_data1(GET_CMD_TIMEOUT)
-        return int(mode)
+        success, mode = self.read_data1(GET_CMD_TIMEOUT)
+        return success, int(mode)
     
     def clearDataBuffer(self):
-        res = self.write_data1(CLEAR_DATA_BUFFER, 0.0)
-        res = True if int(res) == 1 else False
-        return res
+        success, res = self.read_data1(CLEAR_DATA_BUFFER)
+        return success
     
     #---------------------------------------------------------------------
 
     def readMotorData(self):
-        pos0, pos1, vel0, vel1 = self.read_data4(READ_MOTOR_DATA)
-        return round(pos0, 4), round(pos1, 4), round(vel0, 4), round(vel1, 4)
+        success, pos0, pos1, vel0, vel1 = self.read_data4(READ_MOTOR_DATA)
+        return success, round(pos0, 4), round(pos1, 4), round(vel0, 4), round(vel1, 4)
     
     #---------------------------------------------------------------------
 
+    def getMaxVel(self, motor_no):
+        success, maxVel = self.read_data1(GET_MAX_VEL, motor_no)
+        return success, round(maxVel, 3)
+
     def setPPR(self, motor_no, ppr):
-        res = self.write_data1(SET_PPR, ppr, motor_no)
-        res = True if int(res) == 1 else False
-        return res
+        self.write_data1(SET_PPR, ppr, motor_no)
     
     def getPPR(self, motor_no):
-        ppr = self.read_data1(GET_PPR, motor_no)
-        return round(ppr, 3)
+        success, ppr = self.read_data1(GET_PPR, motor_no)
+        return success, round(ppr, 3)
     
     def setKp(self, motor_no, kp):
-        res = self.write_data1(SET_KP, kp, motor_no)
-        res = True if int(res) == 1 else False
-        return res
+        self.write_data1(SET_KP, kp, motor_no)
     
     def getKp(self, motor_no):
-        kp = self.read_data1(GET_KP, motor_no)
-        return round(kp, 3)
+        success, kp = self.read_data1(GET_KP, motor_no)
+        return success, round(kp, 3)
     
     def setKi(self, motor_no, ki):
-        res = self.write_data1(SET_KI, ki, motor_no)
-        res = True if int(res) == 1 else False
-        return res
+        self.write_data1(SET_KI, ki, motor_no)
     
     def getKi(self, motor_no):
-        ki = self.read_data1(GET_KI, motor_no)
-        return round(ki, 3)
+        success, ki = self.read_data1(GET_KI, motor_no)
+        return success, round(ki, 3)
     
     def setKd(self, motor_no, kd):
-        res = self.write_data1(SET_KD, kd, motor_no)
-        res = True if int(res) == 1 else False
-        return res
+        self.write_data1(SET_KD, kd, motor_no)
     
     def getKd(self, motor_no):
-        kd = self.read_data1(GET_KD, motor_no)
-        return round(kd, 3)
+        success, kd = self.read_data1(GET_KD, motor_no)
+        return success, round(kd, 3)
     
     def setRdir(self, motor_no, rdir):
-        res = self.write_data1(SET_RDIR, rdir, motor_no)
-        res = True if int(res) == 1 else False
-        return res
+        self.write_data1(SET_RDIR, rdir, motor_no)
     
     def getRdir(self, motor_no):
-        rdir = self.read_data1(GET_RDIR, motor_no)
-        return int(rdir)
+        success, rdir = self.read_data1(GET_RDIR, motor_no)
+        return success, int(rdir)
     
     def setCutOffFreq(self, motor_no, cutOffFreq):
-        res = self.write_data1(SET_CUT_FREQ, cutOffFreq, motor_no)
-        res = True if int(res) == 1 else False
-        return res
+        self.write_data1(SET_CUT_FREQ, cutOffFreq, motor_no)
     
     def getCutOffFreq(self, motor_no):
-        cutOffFreq = self.read_data1(GET_CUT_FREQ, motor_no)
-        return round(cutOffFreq, 3)
+        success, cutOffFreq = self.read_data1(GET_CUT_FREQ, motor_no)
+        return success, round(cutOffFreq, 3)
     
     def setMaxVel(self, motor_no, maxVel):
-        res = self.write_data1(SET_MAX_VEL, maxVel, motor_no)
-        res = True if int(res) == 1 else False
-        return res
+        self.write_data1(SET_MAX_VEL, maxVel, motor_no)
     
     def getMaxVel(self, motor_no):
-        maxVel = self.read_data1(GET_MAX_VEL, motor_no)
-        return round(maxVel, 3)
+        success, maxVel = self.read_data1(GET_MAX_VEL, motor_no)
+        return success, round(maxVel, 3)
     
     def setI2cAddress(self, i2cAddress):
-        res = self.write_data1(SET_I2C_ADDR, i2cAddress)
-        res = True if int(res) == 1 else False
-        return res
+        self.write_data1(SET_I2C_ADDR, i2cAddress)
     
     def getI2cAddress(self):
-        i2cAddress = self.read_data1(GET_I2C_ADDR)
-        return int(i2cAddress)
+        success, i2cAddress = self.read_data1(GET_I2C_ADDR)
+        return success, int(i2cAddress)
     
     def resetAllParams(self):
-        res = self.write_data1(RESET_PARAMS, 0.0)
-        res = True if int(res) == 1 else False
-        return res
+        success, res = self.read_data1(RESET_PARAMS)
+        return success
