@@ -53,7 +53,7 @@ class EPMC:
             self.ser.close()
     
     #------------------------------------------------------------------------
-    def send_packet_without_payload(self, cmd, length=0):
+    def send_packet_without_payload(self, cmd):
         length = 0
         packet = bytearray([START_BYTE, cmd, length])
         checksum = sum(packet) & 0xFF
@@ -140,12 +140,12 @@ class EPMC:
         self.send_packet_with_payload(cmd, payload)
 
     def read_data2(self, cmd):
-        self.send_packet_without_payload(cmd, length=8)
+        self.send_packet_without_payload(cmd)
         success, a, b = self.read_packet2()
         return success, a, b
 
     def read_data4(self, cmd):
-        self.send_packet_without_payload(cmd, length=16)
+        self.send_packet_without_payload(cmd)
         suceess, a, b, c, d = self.read_packet4()
         return suceess, a, b, c, d
     
