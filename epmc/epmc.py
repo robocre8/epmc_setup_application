@@ -78,14 +78,14 @@ class EPMC:
         return success, round(pos0, 4), round(pos1, 4)
     
     def setCmdTimeout(self, timeout):
-        self.send(SET_CMD_TIMEOUT, float(timeout))
+        self.send(SET_CMD_TIMEOUT, 0.0, float(timeout))
         
     def getCmdTimeout(self):
         success, timeout, _ = self.recv(GET_CMD_TIMEOUT)
         return success, int(timeout)
     
     def setPidMode(self, mode):
-        self.send(SET_PID_MODE, mode)
+        self.send(SET_PID_MODE, 0.0, mode)
     
     def getPidMode(self):
         success, mode, _ = self.recv(GET_CMD_TIMEOUT)
@@ -109,7 +109,7 @@ class EPMC:
         return success, round(maxVel, 3)
 
     def setPPR(self, motor_no, ppr):
-        self.send(SET_PPR, ppr, motor_no)
+        self.send(SET_PPR, motor_no, ppr)
     
     def getPPR(self, motor_no):
         success, ppr, _ = self.recv(GET_PPR, motor_no)
@@ -154,7 +154,7 @@ class EPMC:
         self.send(SET_MAX_SPEED, motor_no, maxVel)
     
     def setI2cAddress(self, i2cAddress):
-        self.send(SET_I2C_ADDR, i2cAddress)
+        self.send(SET_I2C_ADDR, 0.0, i2cAddress)
     
     def getI2cAddress(self):
         success, i2cAddress, _ = self.recv(GET_I2C_ADDR)
