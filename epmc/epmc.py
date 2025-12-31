@@ -49,14 +49,14 @@ class EPMC:
 
     #------------------------------------------------------------------------
     def send(self, cmd, arg1=0.0, arg2=0.0):
-        send_str = str(float(cmd))+" "+str(float(arg1))+" "+str(float(arg2))+"\r"
+        send_str = str(float(cmd))+" "+str(round(float(arg1),4))+" "+str(round(float(arg2),4))+"\r"
         self.ser.write(send_str.encode())
 
     def recv(self, cmd, arg1=0):
         try:
             self.send(cmd, arg1)
             data = self.ser.readline().decode().strip().split(' ')
-            return True, float(data[0]), float(data[1])
+            return True, round(float(data[0]),4), round(float(data[1]),4)
         except:
             # self.ser.reset_input_buffer()
             # self.ser.reset_output_buffer()
@@ -68,14 +68,14 @@ class EPMC:
 
     def readSpeed(self):
         success, vel0, vel1 = self.recv(READ_SPEED)
-        return success, round(vel0, 4), round(vel1, 4)
+        return success, vel0, vel1
     
     def writePWM(self, pwm0, pwm1):
         self.send(WRITE_PWM, pwm0, pwm1)
     
     def readPos(self):
         success, pos0, pos1 = self.recv(READ_POS)
-        return success, round(pos0, 4), round(pos1, 4)
+        return success, pos0, pos1
     
     def setCmdTimeout(self, timeout):
         self.send(SET_CMD_TIMEOUT, 0.0, float(timeout))
@@ -102,7 +102,7 @@ class EPMC:
     
     def readTSpeed(self):
         success, vel0, vel1 = self.recv(READ_TSPEED)
-        return success, round(vel0, 4), round(vel1, 4)
+        return success, vel0, vel1
 
     def getMaxVel(self, motor_no):
         success, maxVel, _ = self.recv(GET_MAX_SPEED, motor_no)
