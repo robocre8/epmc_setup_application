@@ -26,12 +26,12 @@ class GraphFrame(tb.Frame):
     buttonStyle.configure(buttonStyleName, font=('Monospace',9, 'bold'))
 
     #---------------------------------------------------------------------#
-    success, t_v0, t_v1 = g.epmc.readTVel()
+    success, t_v0, t_v1 = g.epmc.readTSpeed()
     if success:
       tVel = [t_v0, t_v1]
       g.motorTargetVel[self.motorNo] = tVel[self.motorNo]
 
-    success, v0, v1 = g.epmc.readVel()
+    success, v0, v1 = g.epmc.readSpeed()
     if success:
       vel = [v0, v1]
       g.motorActualVel[self.motorNo] = vel[self.motorNo]
@@ -263,12 +263,12 @@ class GraphFrame(tb.Frame):
           #---------------------------------------------------------------------#
 
           #---------------------------------------------------------------------#
-          success, t_v0, t_v1 = g.epmc.readTVel()
+          success, t_v0, t_v1 = g.epmc.readTSpeed()
           if success:
             tVel = [t_v0, t_v1]
             g.motorTargetVel[self.motorNo] = tVel[self.motorNo]
 
-          success, v0, v1 = g.epmc.readVel()
+          success, v0, v1 = g.epmc.readSpeed()
           if success:
             vel = [v0, v1]
             g.motorActualVel[self.motorNo] = vel[self.motorNo]

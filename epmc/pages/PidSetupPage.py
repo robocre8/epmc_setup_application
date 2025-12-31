@@ -33,7 +33,7 @@ class PidSetupFrame(tb.Frame):
     if success:
       g.motorCf[self.motorNo] = cf
 
-    success, max_vel = g.epmc.getMaxVel(self.motorNo)
+    success, max_vel = g.epmc.getMaxSpeed(self.motorNo)
     if success:
       g.motorMaxVel[self.motorNo] = max_vel
 
@@ -142,8 +142,8 @@ class PidSetupFrame(tb.Frame):
   
   def setMaxVelFunc(self, vel_val_str):
     if vel_val_str:
-      g.epmc.setMaxVel(self.motorNo, round(float(vel_val_str), 3))
-      success, val = g.epmc.getMaxVel(self.motorNo)
+      g.epmc.setMaxSpeed(self.motorNo, round(float(vel_val_str), 3))
+      success, val = g.epmc.getMaxSpeed(self.motorNo)
       if success:
         g.motorMaxVel[self.motorNo] = val
 

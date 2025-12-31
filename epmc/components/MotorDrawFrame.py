@@ -34,7 +34,7 @@ class MotorDrawFrame(tb.Frame):
       pos=[pos0, pos1]
       g.motorAngPos[self.motorNo] = pos[self.motorNo]
 
-    success, v0, v1 = g.epmc.readVel()
+    success, v0, v1 = g.epmc.readSpeed()
     if success:
       v=[v0, v1]
       g.motorAngVel[self.motorNo] = v[self.motorNo]
@@ -126,7 +126,7 @@ class MotorDrawFrame(tb.Frame):
       pos=[pos0, pos1]
       g.motorAngPos[self.motorNo] = pos[self.motorNo]
 
-    success, v0, v1 = g.epmc.readVel()
+    success, v0, v1 = g.epmc.readSpeed()
     if success:
       v=[v0, v1]
       g.motorAngVel[self.motorNo] = v[self.motorNo]
