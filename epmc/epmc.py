@@ -61,7 +61,8 @@ class EPMC:
             # self.ser.reset_input_buffer()
             # self.ser.reset_output_buffer()
             return False, 0.0, 0.0
-    
+    #---------------------------------------------------------------------
+    #         BASIC COMMANDS
     #---------------------------------------------------------------------
     def writeSpeed(self, v0, v1):
         self.send(WRITE_SPEED, v0, v1)
@@ -98,15 +99,14 @@ class EPMC:
     def getMaxSpeed(self, motor_no):
         success, maxVel, _ = self.recv(GET_MAX_SPEED, motor_no)
         return success, round(maxVel, 3)
+    
+    #---------------------------------------------------------------------
+    #         ADVANCED COMMANDS (USE WITH CAUTION)
     #---------------------------------------------------------------------
     
     def readTSpeed(self):
         success, vel0, vel1 = self.recv(READ_TSPEED)
         return success, vel0, vel1
-
-    def getMaxVel(self, motor_no):
-        success, maxVel, _ = self.recv(GET_MAX_SPEED, motor_no)
-        return success, round(maxVel, 3)
 
     def setPPR(self, motor_no, ppr):
         self.send(SET_PPR, motor_no, ppr)
