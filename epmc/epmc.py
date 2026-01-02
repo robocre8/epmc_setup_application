@@ -61,9 +61,11 @@ class EPMC:
             # self.ser.reset_input_buffer()
             # self.ser.reset_output_buffer()
             return False, 0.0, 0.0
+        
     #---------------------------------------------------------------------
     #         BASIC COMMANDS
     #---------------------------------------------------------------------
+    
     def writeSpeed(self, v0, v1):
         self.send(WRITE_SPEED, v0, v1)
 
