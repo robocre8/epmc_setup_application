@@ -1,5 +1,5 @@
 # Easy PID Motor Controller (EPMC) Setup Application
-It contains source code of the Easy PID Motor Controller (EPMC) GUI application. The application requires that you have the **`L298N EPMC MODULE`** (or a **`CUSTOM EPMC INTERFACE BOARD`**) is connected to your PC. Without the module, only the start page can be viewed.
+It contains source code of the Easy PID Motor Controller (EPMC) GUI application. The application requires that you have the **`EPMC MODULE`** is connected to your PC. Without the module, only the start page can be viewed.
 
 ![Screenshot 2025-05-08 150800](https://github.com/user-attachments/assets/e54d6d61-082f-4f94-b973-b93f00fe7d40)
 
@@ -10,25 +10,19 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
 #### Prequisites
 - This would run on **Linux (Ubuntu)**, **Windows**, and **MAC OS**
 
-> [!NOTE]  
-> For Windows and Mac Users, ensure you have the [**`CH340 serial converter`**](https://sparks.gogo.co.nz/ch340.html?srsltid=AfmBOooJ45evOXTZdp96-_eI1A2xCokPqFyJm0e_Ybx6LOwyY0qJ5Uux) driver installed.
->
-> For Ubuntu Users - the **CH340** driver is installed by default.
-
 - Ensure you have `python3` installed on your PC and also `pip`
 
 - install python virtual environment
   > ```shell
   > sudo apt install python3-pip   # linux or mac users
   > sudo apt install python3-venv   # linux or mac users
-  > sudo apt install python3-virtualenv   # linux or mac users
   > ```
   > *OR*
   > ```shell
   > pip install virtualenv   # windows users (ensure you have pip installed)
   > ```
   
-- Ensure you have the **`Easy IMU Module`** connected to the PC.
+- Ensure you have the **`EPMC Module`** connected to the PC.
 
 #
 
