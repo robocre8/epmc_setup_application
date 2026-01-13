@@ -45,7 +45,7 @@ class EPMC:
     def __init__(self):
         pass
 
-    def connect(self, port, baud=56700, timeOut=0.1):
+    def connect(self, port, baud=115200, timeOut=0.1):
         self.ser = serial.Serial(port, baud, timeout=timeOut)
 
     def disconnect(self):
