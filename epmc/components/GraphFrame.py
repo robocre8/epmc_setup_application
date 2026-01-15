@@ -26,12 +26,12 @@ class GraphFrame(tb.Frame):
     buttonStyle.configure(buttonStyleName, font=('Monospace',9, 'bold'))
 
     #---------------------------------------------------------------------#
-    success, t_v0, t_v1 = g.epmc.readTVel()
+    success, t_v0, t_v1 = g.controller.readTVel()
     if success:
       tVel = [t_v0, t_v1]
       g.motorTargetVel[self.motorNo] = tVel[self.motorNo]
 
-    success, v0, v1 = g.epmc.readVel()
+    success, v0, v1 = g.controller.readVel()
     if success:
       vel = [v0, v1]
       g.motorActualVel[self.motorNo] = vel[self.motorNo]
@@ -194,17 +194,17 @@ class GraphFrame(tb.Frame):
         self.deletePlot(self.plotLineBufferA, self.plotLineBufferB)
         self.plotButton.configure(text='START PLOT')
         self.clearPlot = False
-        # g.epmc.setPidMode(0)
+        # g.controller.setPidMode(0)
         time.sleep(0.1)
 
     elif self.doPlot:
         self.doPlot = False 
-        # g.epmc.setPidMode(0)
+        # g.controller.setPidMode(0)
         # print('stop plot')
     else:
         self.doPlot = True 
         self.doPlotTime = time.time()
-        # g.epmc.setPidMode(1)
+        # g.controller.setPidMode(1)
         # print('start plot')
 
 
@@ -222,7 +222,7 @@ class GraphFrame(tb.Frame):
   def plot_graph(self):
       if self.doPlot and self.doPlotDuration < time.time()-self.doPlotTime:
           if g.motorIsOn[self.motorNo]:
-            g.epmc.writeSpeed(0.0, 0.0)
+            g.controller.writeSpeed(0.0, 0.0)
             g.motorIsOn[self.motorNo] = False
             # print('Motor off', isSuccess)
           self.doPlot = False 
@@ -247,9 +247,9 @@ class GraphFrame(tb.Frame):
           if not g.motorIsOn[self.motorNo]:
             #---------------------------------------------------------------------#
             if self.motorNo == 0:
-              g.epmc.writeSpeed(targetVel, 0.0)
+              g.controller.writeSpeed(targetVel, 0.0)
             elif self.motorNo == 1:
-              g.epmc.writeSpeed(0.0, targetVel)
+              g.controller.writeSpeed(0.0, targetVel)
             #---------------------------------------------------------------------#
 
             g.motorIsOn[self.motorNo] = True
@@ -257,18 +257,18 @@ class GraphFrame(tb.Frame):
           
           #---------------------------------------------------------------------#
           if self.motorNo == 0:
-            g.epmc.writeSpeed(targetVel, 0.0)
+            g.controller.writeSpeed(targetVel, 0.0)
           elif self.motorNo == 1:
-            g.epmc.writeSpeed(0.0, targetVel)
+            g.controller.writeSpeed(0.0, targetVel)
           #---------------------------------------------------------------------#
 
           #---------------------------------------------------------------------#
-          success, t_v0, t_v1 = g.epmc.readTVel()
+          success, t_v0, t_v1 = g.controller.readTVel()
           if success:
             tVel = [t_v0, t_v1]
             g.motorTargetVel[self.motorNo] = tVel[self.motorNo]
 
-          success, v0, v1 = g.epmc.readVel()
+          success, v0, v1 = g.controller.readVel()
           if success:
             vel = [v0, v1]
             g.motorActualVel[self.motorNo] = vel[self.motorNo]
@@ -306,7 +306,7 @@ class GraphFrame(tb.Frame):
 
       else:
           if g.motorIsOn[self.motorNo]:
-            g.epmc.writeSpeed(0.0, 0.0)
+            g.controller.writeSpeed(0.0, 0.0)
             self.clearPlot = True
             self.plotButton.configure(text='CLEAR PLOT')
             g.motorIsOn[self.motorNo] = False

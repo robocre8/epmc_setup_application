@@ -4,14 +4,12 @@ from ttkbootstrap.constants import *
 from ttkbootstrap.dialogs import Messagebox
 
 import serial.tools.list_ports
-from epmc.epmc import EPMC
+from epmc_serial import EPMCSerialClient
 
 import time
 
 from epmc.globalParams import g
 from epmc.components.SelectValueFrame import SelectValueFrame
-
-
 
 
 
@@ -70,11 +68,17 @@ class SerialConnectFrame(tb.Frame):
 
   def connectToPort(self, port):
     try:
-      g.epmc = EPMC()
-      g.epmc.connect(port)
+      # 100Hz comm setup
+      serial_port = g.port
+      serial_baudrate = 115200
+      serial_timeout = 0.009 #value < 0.01 (for 100Hz comm)
+
+      g.controller = EPMCSerialClient()
+      g.controller.connect(serial_port, serial_baudrate, serial_timeout)
       time.sleep(4)
-      g.epmc.setCmdTimeout(0)
-      success = g.epmc.clearDataBuffer()
+      g.controller.setCmdTimeout(0)
+      success = g.controller.clearDataBuffer()
+      
       return True
     except:
       return False

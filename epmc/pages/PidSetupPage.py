@@ -17,23 +17,23 @@ class PidSetupFrame(tb.Frame):
 
     self.motorNo = motorNo
 
-    success, kp = g.epmc.getKp(self.motorNo)
+    success, kp = g.controller.getKp(self.motorNo)
     if success:
       g.motorKp[self.motorNo] = kp
 
-    success, ki = g.epmc.getKi(self.motorNo)
+    success, ki = g.controller.getKi(self.motorNo)
     if success:
       g.motorKi[self.motorNo] = ki
 
-    success, kd = g.epmc.getKd(self.motorNo)
+    success, kd = g.controller.getKd(self.motorNo)
     if success:
       g.motorKd[self.motorNo] = kd
 
-    success, cf = g.epmc.getCutOffFreq(self.motorNo)
+    success, cf = g.controller.getCutOffFreq(self.motorNo)
     if success:
       g.motorCf[self.motorNo] = cf
 
-    success, max_vel = g.epmc.getMaxVel(self.motorNo)
+    success, max_vel = g.controller.getMaxVel(self.motorNo)
     if success:
       g.motorMaxVel[self.motorNo] = max_vel
 
@@ -102,8 +102,8 @@ class PidSetupFrame(tb.Frame):
 
   def setKpFunc(self, kp_val_str):
     if kp_val_str:
-      g.epmc.setKp(self.motorNo, round(float(kp_val_str), 3))
-      success, val = g.epmc.getKp(self.motorNo)
+      g.controller.setKp(self.motorNo, round(float(kp_val_str), 3))
+      success, val = g.controller.getKp(self.motorNo)
       if success:
         g.motorKp[self.motorNo] = val
 
@@ -112,8 +112,8 @@ class PidSetupFrame(tb.Frame):
 
   def setKiFunc(self, ki_val_str):
     if ki_val_str:
-      g.epmc.setKi(self.motorNo, round(float(ki_val_str), 3))
-      success, val = g.epmc.getKi(self.motorNo)
+      g.controller.setKi(self.motorNo, round(float(ki_val_str), 3))
+      success, val = g.controller.getKi(self.motorNo)
       if success:
         g.motorKi[self.motorNo] = val
 
@@ -122,8 +122,8 @@ class PidSetupFrame(tb.Frame):
 
   def setKdFunc(self, kd_val_str):
     if kd_val_str:
-      g.epmc.setKd(self.motorNo, round(float(kd_val_str), 3))
-      success, val = g.epmc.getKd(self.motorNo)
+      g.controller.setKd(self.motorNo, round(float(kd_val_str), 3))
+      success, val = g.controller.getKd(self.motorNo)
       if success:
         g.motorKd[self.motorNo] = val
 
@@ -132,8 +132,8 @@ class PidSetupFrame(tb.Frame):
 
   def setCfFunc(self, cf_val_str):
     if cf_val_str:
-      g.epmc.setCutOffFreq(self.motorNo, round(float(cf_val_str), 3))
-      success, val = g.epmc.getCutOffFreq(self.motorNo)
+      g.controller.setCutOffFreq(self.motorNo, round(float(cf_val_str), 3))
+      success, val = g.controller.getCutOffFreq(self.motorNo)
       if success:
         g.motorCf[self.motorNo] = val
 
@@ -142,8 +142,8 @@ class PidSetupFrame(tb.Frame):
   
   def setMaxVelFunc(self, vel_val_str):
     if vel_val_str:
-      g.epmc.setMaxVel(self.motorNo, round(float(vel_val_str), 3))
-      success, val = g.epmc.getMaxVel(self.motorNo)
+      g.controller.setMaxVel(self.motorNo, round(float(vel_val_str), 3))
+      success, val = g.controller.getMaxVel(self.motorNo)
       if success:
         g.motorMaxVel[self.motorNo] = val
 
