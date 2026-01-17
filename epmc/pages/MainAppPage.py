@@ -39,12 +39,12 @@ class MainAppFrame(tb.Frame):
     
     self.button4 = tb.Button(self.sideNavFrame, text="MOTOR 1 PID", style=buttonStyleName,
                              command= lambda: self.displayPage(self.button4, self.displayMotor1PidSetupPage))
-    
-    self.button5 = tb.Button(self.sideNavFrame, text="RESET", style=buttonStyleName,
-                             command= lambda: self.displayPage(self.button5, self.displayResetPage))
 
-    self.button6 = tb.Button(self.sideNavFrame, text="I2C SETUP", style=buttonStyleName,
-                             command= lambda: self.displayPage(self.button6, self.displayI2CSetupPage))
+    self.button5 = tb.Button(self.sideNavFrame, text="I2C SETUP", style=buttonStyleName,
+                             command= lambda: self.displayPage(self.button5, self.displayI2CSetupPage))
+    
+    self.button6 = tb.Button(self.sideNavFrame, text="RESET", style=buttonStyleName,
+                             command= lambda: self.displayPage(self.button6, self.displayResetPage))
     
     
     menu_padding = 25
@@ -60,7 +60,7 @@ class MainAppFrame(tb.Frame):
 
     
     ############Initialize the mainContentFrame ################
-    self.displayPage(self.button5, self.displayResetPage)
+    self.displayPage(self.button6, self.displayResetPage)
     ############################################################
 
 

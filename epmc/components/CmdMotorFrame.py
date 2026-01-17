@@ -41,39 +41,39 @@ class CmdMotorFrame(tb.LabelFrame):
     if int(g.motorDirConfig[self.motorNo]) == 1:
       #---------------------------------------------------------------------#
       if self.motorNo == 0:
-        g.epmc.writePWM(g.motorTestPwm[self.motorNo], 0)
+        g.controller.writePWM(g.motorTestPwm[self.motorNo], 0)
       elif self.motorNo == 1:
-        g.epmc.writePWM(0, g.motorTestPwm[self.motorNo])
+        g.controller.writePWM(0, g.motorTestPwm[self.motorNo])
       #---------------------------------------------------------------------#
     elif int(g.motorDirConfig[self.motorNo]) == -1:
       #---------------------------------------------------------------------#
       if self.motorNo == 0:
-        g.epmc.writePWM(-g.motorTestPwm[self.motorNo], 0)
+        g.controller.writePWM(-g.motorTestPwm[self.motorNo], 0)
       elif self.motorNo == 1:
-        g.epmc.writePWM(0, -g.motorTestPwm[self.motorNo])
+        g.controller.writePWM(0, -g.motorTestPwm[self.motorNo])
       #---------------------------------------------------------------------#
 
   def stopForwardCommand(self, e):
     # print("stop forward command")
-    g.epmc.writePWM(0, 0)
+    g.controller.writePWM(0, 0)
 
   def startReverseCommand(self, e):
     # print("start reverse command")
     if int(g.motorDirConfig[self.motorNo]) == 1:
       #---------------------------------------------------------------------#
       if self.motorNo == 0:
-        g.epmc.writePWM(-g.motorTestPwm[self.motorNo], 0)
+        g.controller.writePWM(-g.motorTestPwm[self.motorNo], 0)
       elif self.motorNo == 1:
-        g.epmc.writePWM(0, -g.motorTestPwm[self.motorNo])
+        g.controller.writePWM(0, -g.motorTestPwm[self.motorNo])
       #---------------------------------------------------------------------#
     elif int(g.motorDirConfig[self.motorNo]) == -1:
       #---------------------------------------------------------------------#
       if self.motorNo == 0:
-        g.epmc.writePWM(g.motorTestPwm[self.motorNo], 0)
+        g.controller.writePWM(g.motorTestPwm[self.motorNo], 0)
       elif self.motorNo == 1:
-        g.epmc.writePWM(0, g.motorTestPwm[self.motorNo])
+        g.controller.writePWM(0, g.motorTestPwm[self.motorNo])
       #---------------------------------------------------------------------#
 
   def stopReverseCommand(self, e):
     # print("stop reverse command")
-    g.epmc.writePWM(0, 0)
+    g.controller.writePWM(0, 0)
