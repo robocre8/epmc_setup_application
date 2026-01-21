@@ -13,6 +13,8 @@ from epmc.components.SelectValueFrame import SelectValueFrame
 
 
 
+
+
 class SerialConnectFrame(tb.Frame):
   def __init__(self, parentFrame, next_func=None):
     super().__init__(master=parentFrame)
@@ -68,17 +70,15 @@ class SerialConnectFrame(tb.Frame):
 
   def connectToPort(self, port):
     try:
-      # 100Hz comm setup
       serial_port = g.port
       serial_baudrate = 115200
-      serial_timeout = 0.009 #value < 0.01 (for 100Hz comm)
+      serial_timeout = 0.05
 
       g.controller = EPMCSerialClient()
       g.controller.connect(serial_port, serial_baudrate, serial_timeout)
       time.sleep(4)
       g.controller.setCmdTimeout(0)
       success = g.controller.clearDataBuffer()
-      
       return True
     except:
       return False
