@@ -29,12 +29,12 @@ class MotorDrawFrame(tb.Frame):
     buttonStyle.configure(buttonStyleName, font=('Monospace',10, 'bold'))
 
     #---------------------------------------------------------------------#
-    success, pos0, pos1 = g.epmc.readPos()
+    success, pos0, pos1 = g.controller.readPos()
     if success:
       pos=[pos0, pos1]
       g.motorAngPos[self.motorNo] = pos[self.motorNo]
 
-    success, v0, v1 = g.epmc.readVel()
+    success, v0, v1 = g.controller.readVel()
     if success:
       v=[v0, v1]
       g.motorAngVel[self.motorNo] = v[self.motorNo]
@@ -94,15 +94,15 @@ class MotorDrawFrame(tb.Frame):
 
   def sendPwmCtrl(self):
     if g.motorIsOn[self.motorNo]:
-      g.epmc.writePWM(0, 0)
+      g.controller.writePWM(0, 0)
       self.button2.configure(text="START MOTOR")
 
     else:
       #---------------------------------------------------------------------#
       if self.motorNo == 0:
-        g.epmc.writePWM(g.motorTestPwm[self.motorNo], 0)
+        g.controller.writePWM(g.motorTestPwm[self.motorNo], 0)
       elif self.motorNo == 1:
-        g.epmc.writePWM(0, g.motorTestPwm[self.motorNo])
+        g.controller.writePWM(0, g.motorTestPwm[self.motorNo])
       #---------------------------------------------------------------------#
       g.motorIsOn[self.motorNo] = True
       g.motorStartTime[self.motorNo] = time.time()
@@ -113,7 +113,7 @@ class MotorDrawFrame(tb.Frame):
 
   def draw_motor_ang_pos(self):
     if g.motorIsOn[self.motorNo] and g.motorTestDuration[self.motorNo] < time.time()-g.motorStartTime[self.motorNo]:
-        g.epmc.writePWM(0, 0)
+        g.controller.writePWM(0, 0)
         g.motorIsOn[self.motorNo] = False
         self.button2.configure(text="START MOTOR")
 
@@ -121,12 +121,12 @@ class MotorDrawFrame(tb.Frame):
     self.canvas.delete(self.mid_circle)
 
     #---------------------------------------------------------------------#
-    success, pos0, pos1 = g.epmc.readPos()
+    success, pos0, pos1 = g.controller.readPos()
     if success:
       pos=[pos0, pos1]
       g.motorAngPos[self.motorNo] = pos[self.motorNo]
 
-    success, v0, v1 = g.epmc.readVel()
+    success, v0, v1 = g.controller.readVel()
     if success:
       v=[v0, v1]
       g.motorAngVel[self.motorNo] = v[self.motorNo]

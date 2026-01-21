@@ -7,7 +7,7 @@ class g():
   signalList = ["square", "step", "triangle", "sine"]
 
   app = None
-  epmc = None
+  controller = None
   port = "None"
 
   i2cAddress = None

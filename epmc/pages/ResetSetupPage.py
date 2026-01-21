@@ -44,8 +44,8 @@ class ResetSetupFrame(tk.Frame):
       Messagebox.show_error("INFO:\n\nOperation Was Cancelled", "ERROR")
 
   def resetAllParams(self):
-    try:
-      isSuccessful = g.epmc.resetAllParams()
-      return isSuccessful
-    except:
+    success = g.controller.resetAllParams()
+    if success:
+      return True
+    else:
       return False

@@ -28,7 +28,7 @@ class EncSetupFrame(tb.Frame):
     self.frame1.grid_columnconfigure((0,1,2,3), weight=1, uniform='a')
 
     #create widgets to be added to frame1
-    success, ppr = g.epmc.getPPR(self.motorNo)
+    success, ppr = g.controller.getPPR(self.motorNo)
     if success:
       g.motorPPR[self.motorNo] = ppr
 
@@ -88,8 +88,8 @@ class EncSetupFrame(tb.Frame):
   def setPulsePerRevFunc(self, ppr_val_str):
     if ppr_val_str:
       val = float(ppr_val_str)
-      g.epmc.setPPR(self.motorNo, val)
-      success, val = g.epmc.getPPR(self.motorNo)
+      g.controller.setPPR(self.motorNo, val)
+      success, val = g.controller.getPPR(self.motorNo)
       if success:
         g.motorPPR[self.motorNo] = val
 
@@ -107,7 +107,7 @@ class EncSetupFrame(tb.Frame):
 
 
   def initDirConfigA(self):
-    success, rdir = g.epmc.getRdir(self.motorNo)
+    success, rdir = g.controller.getRdir(self.motorNo)
     if success:
       g.motorDirConfig[self.motorNo] = rdir
 
@@ -125,15 +125,15 @@ class EncSetupFrame(tb.Frame):
       g.motorDirConfigText[self.motorNo] = dir_val_str
 
       if g.motorDirConfigText[self.motorNo] == g.dirConfigTextList[0]:
-        g.epmc.setRdir(self.motorNo, 1)
-        success, rdir = g.epmc.getRdir(self.motorNo)
+        g.controller.setRdir(self.motorNo, 1)
+        success, rdir = g.controller.getRdir(self.motorNo)
         if success:
           g.motorDirConfig[self.motorNo] = rdir
         g.motorInitialTheta[self.motorNo] = -1*g.motorTheta[self.motorNo] - 90
         
       elif g.motorDirConfigText[self.motorNo] == g.dirConfigTextList[1]:
-        g.epmc.setRdir(self.motorNo, -1)
-        success, rdir = g.epmc.getRdir(self.motorNo)
+        g.controller.setRdir(self.motorNo, -1)
+        success, rdir = g.controller.getRdir(self.motorNo)
         if success:
           g.motorDirConfig[self.motorNo] = rdir
         g.motorInitialTheta[self.motorNo] = -1*g.motorTheta[self.motorNo] + 90
