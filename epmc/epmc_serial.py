@@ -50,9 +50,30 @@ class EPMCSerialClient:
             self.ser = None
 
     # ------------------ Packet Helpers ------------------
+
+    def _flush_rx(self):
+        """Flush any unread bytes in RX buffer"""
+        if self.ser is None:
+            return
+        try:
+            self.ser.reset_input_buffer()
+        except Exception:
+            pass
+
+
+    def _flush_tx(self):
+        """Flush TX buffer"""
+        if self.ser is None:
+            return
+        try:
+            self.ser.reset_output_buffer()
+        except Exception:
+            pass
+
     def _send_packet(self, cmd: int, payload: bytes = b""):
         if self.ser is None:
             raise RuntimeError("Serial port is not connected")
+        self._flush_rx()
         length = len(payload)
         packet = bytearray([START_BYTE, cmd, length]) + payload
         checksum = sum(packet) & 0xFF
@@ -65,10 +86,12 @@ class EPMCSerialClient:
             raise RuntimeError("Serial port is not connected")
         payload = self.ser.read(4 * count)
         if len(payload) != 4 * count:
+            self._flush_rx()
             return False, tuple([0.0] * count)
         return True, struct.unpack("<" + "f" * count, payload)
 
     # ------------------ Generic Data ------------------
+    
     def write_data1(self, cmd: int, val: float, pos: int = 0):
         payload = struct.pack("<Bf", pos, val)
         self._send_packet(cmd, payload)
