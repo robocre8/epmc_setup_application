@@ -102,46 +102,46 @@ class EPMCSerialClient:
         success, (val,) = self._read_floats(1)
         return success, val
 
-    def write_data2(self, cmd: int, a: float, b: float):
-        payload = struct.pack("<ff", a, b)
+    def write_data4(self, cmd: int, a: float, b: float, c: float, d: float):
+        payload = struct.pack("<ffff", a, b, c, d)
         self._send_packet(cmd, payload)
-
-    def read_data2(self, cmd: int) -> Tuple[bool, float, float]:
-        self._send_packet(cmd)
-        success, vals = self._read_floats(2)
-        return success, *vals
 
     def read_data4(self, cmd: int) -> Tuple[bool, float, float, float, float]:
         self._send_packet(cmd)
         success, vals = self._read_floats(4)
         return success, *vals
 
-    # ------------------ Motor Commands ------------------
-    def writeSpeed(self, v0: float, v1: float):
-        self.write_data2(WRITE_VEL, v0, v1)
+    def read_data8(self, cmd: int) -> Tuple[bool, float, float, float, float, float, float, float, float]:
+        self._send_packet(cmd)
+        success, vals = self._read_floats(8)
+        return success, *vals
 
-    def writePWM(self, pwm0: float, pwm1: float):
-        self.write_data2(WRITE_PWM, pwm0, pwm1)
+    # ------------------ Motor Commands ------------------
+    def writeSpeed(self, v0: float, v1: float, v2: float, v3: float):
+        self.write_data4(WRITE_VEL, v0, v1, v2, v3)
+
+    def writePWM(self, pwm0: float, pwm1: float, pwm2: float, pwm3: float):
+        self.write_data4(WRITE_PWM, pwm0, pwm1, pwm2, pwm3)
 
     def readPos(self):
-        success, pos0, pos1 = self.read_data2(READ_POS)
-        return success, round(pos0, 4), round(pos1, 4)
+        success, pos0, pos1, pos2, pos3 = self.read_data4(READ_POS)
+        return success, round(pos0, 4), round(pos1, 4), round(pos2, 4), round(pos3, 4)
 
     def readVel(self):
-        success, vel0, vel1 = self.read_data2(READ_VEL)
-        return success, round(vel0, 4), round(vel1, 4)
+        success, vel0, vel1, vel2, vel3 = self.read_data4(READ_VEL)
+        return success, round(vel0, 4), round(vel1, 4), round(vel2, 4), round(vel3, 4)
 
     def readUVel(self):
-        success, vel0, vel1 = self.read_data2(READ_UVEL)
-        return success, round(vel0, 4), round(vel1, 4)
+        success, vel0, vel1, vel2, vel3 = self.read_data4(READ_UVEL)
+        return success, round(vel0, 4), round(vel1, 4), round(vel2, 4), round(vel3, 4)
 
     def readTVel(self):
-        success, vel0, vel1 = self.read_data2(READ_TVEL)
-        return success, round(vel0, 4), round(vel1, 4)
+        success, vel0, vel1, vel2, vel3 = self.read_data4(READ_TVEL)
+        return success, round(vel0, 4), round(vel1, 4), round(vel2, 4), round(vel3, 4)
 
     def readMotorData(self):
-        success, pos0, pos1, vel0, vel1 = self.read_data4(READ_MOTOR_DATA)
-        return success, round(pos0, 4), round(pos1, 4), round(vel0, 4), round(vel1, 4)
+        success, pos0, pos1, pos2, pos3, vel0, vel1, vel2, vel3 = self.read_data8(READ_MOTOR_DATA)
+        return success, round(pos0, 4), round(pos1, 4), round(pos2, 4), round(pos3, 4), round(vel0, 4), round(vel1, 4), round(vel2, 4), round(vel3, 4)
 
     # ------------------ PID / Timeout ------------------
     def setCmdTimeout(self, timeout: float):

@@ -45,7 +45,4 @@ class ResetSetupFrame(tk.Frame):
 
   def resetAllParams(self):
     success = g.controller.resetAllParams()
-    if success:
-      return True
-    else:
-      return False
+    return success

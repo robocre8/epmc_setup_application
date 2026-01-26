@@ -26,14 +26,14 @@ class GraphFrame(tb.Frame):
     buttonStyle.configure(buttonStyleName, font=('Monospace',9, 'bold'))
 
     #---------------------------------------------------------------------#
-    success, t_v0, t_v1 = g.controller.readTVel()
+    success, t_v0, t_v1, t_v2, t_v3 = g.controller.readTVel()
     if success:
-      tVel = [t_v0, t_v1]
+      tVel = [t_v0, t_v1, t_v2, t_v3]
       g.motorTargetVel[self.motorNo] = tVel[self.motorNo]
 
-    success, v0, v1 = g.controller.readVel()
+    success, v0, v1, v2, v3 = g.controller.readVel()
     if success:
-      vel = [v0, v1]
+      vel = [v0, v1, v2, v3]
       g.motorActualVel[self.motorNo] = vel[self.motorNo]
     #---------------------------------------------------------------------#
 
@@ -247,9 +247,13 @@ class GraphFrame(tb.Frame):
           if not g.motorIsOn[self.motorNo]:
             #---------------------------------------------------------------------#
             if self.motorNo == 0:
-              g.controller.writeSpeed(targetVel, 0.0)
+              g.controller.writeSpeed(targetVel, 0.0, 0.0, 0.0)
             elif self.motorNo == 1:
-              g.controller.writeSpeed(0.0, targetVel)
+              g.controller.writeSpeed(0.0, targetVel, 0.0, 0.0)
+            elif self.motorNo == 2:
+              g.controller.writeSpeed(0.0, 0.0, targetVel, 0.0)
+            elif self.motorNo == 3:
+              g.controller.writeSpeed(0.0, 0.0, 0.0, targetVel)
             #---------------------------------------------------------------------#
 
             g.motorIsOn[self.motorNo] = True
@@ -257,20 +261,24 @@ class GraphFrame(tb.Frame):
           
           #---------------------------------------------------------------------#
           if self.motorNo == 0:
-            g.controller.writeSpeed(targetVel, 0.0)
+            g.controller.writeSpeed(targetVel, 0.0, 0.0, 0.0)
           elif self.motorNo == 1:
-            g.controller.writeSpeed(0.0, targetVel)
+            g.controller.writeSpeed(0.0, targetVel, 0.0, 0.0)
+          elif self.motorNo == 2:
+            g.controller.writeSpeed(0.0, 0.0, targetVel, 0.0)
+          elif self.motorNo == 3:
+            g.controller.writeSpeed(0.0, 0.0, 0.0, targetVel)
           #---------------------------------------------------------------------#
 
           #---------------------------------------------------------------------#
-          success, t_v0, t_v1 = g.controller.readTVel()
+          success, t_v0, t_v1, t_v2, t_v3 = g.controller.readTVel()
           if success:
-            tVel = [t_v0, t_v1]
+            tVel = [t_v0, t_v1, t_v2, t_v3]
             g.motorTargetVel[self.motorNo] = tVel[self.motorNo]
 
-          success, v0, v1 = g.controller.readVel()
+          success, v0, v1, v2, v3 = g.controller.readVel()
           if success:
-            vel = [v0, v1]
+            vel = [v0, v1, v2, v3]
             g.motorActualVel[self.motorNo] = vel[self.motorNo]
           #---------------------------------------------------------------------#
             
