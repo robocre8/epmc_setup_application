@@ -79,7 +79,7 @@ class SerialConnectFrame(tb.Frame):
       time.sleep(4)
       g.controller.setCmdTimeout(0)
       success = g.controller.clearDataBuffer()
-      print("Clear buffer success:", success)
+      # print("Clear buffer success:", success)
       return True
     except:
       return False
