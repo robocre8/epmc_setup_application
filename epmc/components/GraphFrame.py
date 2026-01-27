@@ -222,7 +222,7 @@ class GraphFrame(tb.Frame):
   def plot_graph(self):
       if self.doPlot and self.doPlotDuration < time.time()-self.doPlotTime:
           if g.motorIsOn[self.motorNo]:
-            g.controller.writeSpeed(0.0, 0.0)
+            g.controller.writeSpeed(0.0, 0.0, 0.0, 0.0)
             g.motorIsOn[self.motorNo] = False
             # print('Motor off', isSuccess)
           self.doPlot = False 
@@ -314,7 +314,7 @@ class GraphFrame(tb.Frame):
 
       else:
           if g.motorIsOn[self.motorNo]:
-            g.controller.writeSpeed(0.0, 0.0)
+            g.controller.writeSpeed(0.0, 0.0, 0.0, 0.0)
             self.clearPlot = True
             self.plotButton.configure(text='CLEAR PLOT')
             g.motorIsOn[self.motorNo] = False
