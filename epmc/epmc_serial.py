@@ -1,6 +1,8 @@
 import serial
 import struct
 from typing import Tuple
+from enum import Enum
+from time import sleep
 
 # Serial Protocol Command IDs
 START_BYTE = 0xAA
@@ -33,16 +35,31 @@ GET_I2C_ADDR = 0x1A
 RESET_PARAMS = 0x1B
 READ_MOTOR_DATA = 0x2A
 CLEAR_DATA_BUFFER = 0x2C
+GET_NUM_OF_MOTORS = 0x2D
+
+class SupportedNumOfMotors(Enum):
+    TWO = 2
+    FOUR = 4
 
 
 class EPMCSerialClient:
     """Python client for EPMC serial communication."""
 
-    def __init__(self):
+    def __init__(self, supported_num_of_motors: SupportedNumOfMotors):
         self.ser: serial.Serial | None = None
+        self.num_of_motors: int = supported_num_of_motors.value
 
     def connect(self, port: str, baud: int = 115200, timeout: float = 0.1):
         self.ser = serial.Serial(port, baud, timeout=timeout)
+        sleep(3.0)
+
+        for _ in range(10):
+            if self.confirmNumOfMotors():
+                return
+            sleep(0.1)
+
+        self.disconnect()
+        raise RuntimeError("EPMC motor count mismatch")
 
     def disconnect(self):
         if self.ser and self.ser.is_open:
@@ -57,7 +74,7 @@ class EPMCSerialClient:
             return
         try:
             self.ser.reset_input_buffer()
-        except Exception:
+        except serial.SerialException:
             pass
 
 
@@ -67,8 +84,9 @@ class EPMCSerialClient:
             return
         try:
             self.ser.reset_output_buffer()
-        except Exception:
+        except serial.SerialException:
             pass
+
 
     def _send_packet(self, cmd: int, payload: bytes = b""):
         if self.ser is None:
@@ -81,13 +99,26 @@ class EPMCSerialClient:
         self.ser.write(packet)
         self.ser.flush()
 
+    
     def _read_floats(self, count: int) -> Tuple[bool, tuple]:
         if self.ser is None:
             raise RuntimeError("Serial port is not connected")
-        payload = self.ser.read(4 * count)
-        if len(payload) != 4 * count:
+
+        try:
+            payload = self.ser.read(4 * count)
+
+            if len(payload) != 4 * count:
+                # partial frame → stream is now misaligned
+                self._flush_rx()
+                return False, tuple([0.0] * count)
+
+        except (serial.SerialTimeoutException,
+                serial.SerialException,
+                Exception):
+            # Any read-related failure → resync stream
             self._flush_rx()
             return False, tuple([0.0] * count)
+        
         return True, struct.unpack("<" + "f" * count, payload)
 
     # ------------------ Generic Data ------------------
@@ -109,39 +140,80 @@ class EPMCSerialClient:
     def read_data2(self, cmd: int) -> Tuple[bool, float, float]:
         self._send_packet(cmd)
         success, vals = self._read_floats(2)
-        return success, *vals
+        return success, vals
+        # return success, *vals
 
     def read_data4(self, cmd: int) -> Tuple[bool, float, float, float, float]:
         self._send_packet(cmd)
         success, vals = self._read_floats(4)
-        return success, *vals
+        return success, vals
+        # return success, *vals
+    
+    def write_data4(self, cmd: int, a: float, b: float, c: float, d: float):
+        payload = struct.pack("<ffff", a, b, c, d)
+        self._send_packet(cmd, payload)
 
+    def read_data8(self, cmd: int) -> Tuple[bool, float, float, float, float, float, float, float, float]:
+        self._send_packet(cmd)
+        success, vals = self._read_floats(8)
+        return success, vals
+        # return success, *vals
+
+    # ----------------------------------------------------
+
+    def confirmNumOfMotors(self):
+        success, num_of_motors = self.read_data1(GET_NUM_OF_MOTORS)
+        return (success and int(num_of_motors) == self.num_of_motors)
+        
     # ------------------ Motor Commands ------------------
-    def writeSpeed(self, v0: float, v1: float):
-        self.write_data2(WRITE_VEL, v0, v1)
 
-    def writePWM(self, pwm0: float, pwm1: float):
-        self.write_data2(WRITE_PWM, pwm0, pwm1)
+    def writeSpeed(self, v0: float, v1: float, v2: float = 0.0, v3: float = 0.0):
+        if self.num_of_motors == SupportedNumOfMotors.TWO.value:
+            self.write_data2(WRITE_VEL, v0, v1)
+        elif self.num_of_motors == SupportedNumOfMotors.FOUR.value:
+            self.write_data4(WRITE_VEL, v0, v1, v2, v3)
+
+    def writePWM(self, pwm0: float, pwm1: float, pwm2: float = 0.0, pwm3: float = 0.0):
+        if self.num_of_motors == SupportedNumOfMotors.TWO.value:
+            self.write_data2(WRITE_PWM, pwm0, pwm1)
+        elif self.num_of_motors == SupportedNumOfMotors.FOUR.value:
+            self.write_data4(WRITE_PWM, pwm0, pwm1, pwm2, pwm3)
+    
+    # ----- MOTOR READ HELPERS ----------
+
+    def _read_motor_array(self, cmd: int):
+        if self.num_of_motors == SupportedNumOfMotors.TWO.value:
+            success, vals = self.read_data2(cmd)
+        elif self.num_of_motors == SupportedNumOfMotors.FOUR.value:
+            success, vals = self.read_data4(cmd)
+        else:
+            return False, tuple()
+
+        return success, tuple(round(v, 4) for v in vals)
+
+    # ---------- READ COMMANDS ----------
 
     def readPos(self):
-        success, pos0, pos1 = self.read_data2(READ_POS)
-        return success, round(pos0, 4), round(pos1, 4)
+        return self._read_motor_array(READ_POS)
 
     def readVel(self):
-        success, vel0, vel1 = self.read_data2(READ_VEL)
-        return success, round(vel0, 4), round(vel1, 4)
+        return self._read_motor_array(READ_VEL)
 
     def readUVel(self):
-        success, vel0, vel1 = self.read_data2(READ_UVEL)
-        return success, round(vel0, 4), round(vel1, 4)
+        return self._read_motor_array(READ_UVEL)
 
     def readTVel(self):
-        success, vel0, vel1 = self.read_data2(READ_TVEL)
-        return success, round(vel0, 4), round(vel1, 4)
+        return self._read_motor_array(READ_TVEL)
 
     def readMotorData(self):
-        success, pos0, pos1, vel0, vel1 = self.read_data4(READ_MOTOR_DATA)
-        return success, round(pos0, 4), round(pos1, 4), round(vel0, 4), round(vel1, 4)
+        if self.num_of_motors == SupportedNumOfMotors.TWO.value:
+            success, vals = self.read_data4(READ_MOTOR_DATA)
+        elif self.num_of_motors == SupportedNumOfMotors.FOUR.value:
+            success, vals = self.read_data8(READ_MOTOR_DATA)
+        else:
+            return False, tuple()
+
+        return success, tuple(round(v, 4) for v in vals)
 
     # ------------------ PID / Timeout ------------------
     def setCmdTimeout(self, timeout: float):
