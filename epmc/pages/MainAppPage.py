@@ -42,7 +42,7 @@ class MainAppFrame(tb.Frame):
     self.button4 = tb.Button(self.sideNavFrame, text="MOTOR 1 PID", style=buttonStyleName,
                              command= lambda: self.displayPage(self.button4, self.displayMotor1PidSetupPage))
     
-    if g.num_of_motors == 2:
+    if g.supported_num_of_motors == 2:
 
       self.button5 = tb.Button(self.sideNavFrame, text="RESET", style=buttonStyleName,
                              command= lambda: self.displayPage(self.button5, self.displayResetPage))
@@ -50,7 +50,7 @@ class MainAppFrame(tb.Frame):
       self.button6 = tb.Button(self.sideNavFrame, text="I2C SETUP", style=buttonStyleName,
                              command= lambda: self.displayPage(self.button6, self.displayI2CSetupPage))
       
-    elif g.num_of_motors == 4:
+    elif g.supported_num_of_motors == 4:
     
       self.button5 = tb.Button(self.sideNavFrame, text="MOTOR 2 ENC", style=buttonStyleName,
                               command= lambda: self.displayPage(self.button5, self.displayMotor2EncSetupPage))
@@ -79,11 +79,11 @@ class MainAppFrame(tb.Frame):
     self.button3.pack(side="top", fill="x", padx=5, pady=0)
     self.button4.pack(side="top", fill="x", padx=5, pady=(0,menu_padding))
 
-    if g.num_of_motors == 2:
+    if g.supported_num_of_motors == 2:
       self.button5.pack(side="top", fill="x", padx=5, pady=0)
       self.button6.pack(side="top", fill="x", padx=5, pady=0)
 
-    elif g.num_of_motors == 4:
+    elif g.supported_num_of_motors == 4:
       self.button5.pack(side="top", fill="x", padx=5, pady=0)
       self.button6.pack(side="top", fill="x", padx=5, pady=(0,menu_padding))
       self.button7.pack(side="top", fill="x", padx=5, pady=0)
@@ -94,9 +94,9 @@ class MainAppFrame(tb.Frame):
 
     
     ############Initialize the mainContentFrame ################
-    if g.num_of_motors == 2:
+    if g.supported_num_of_motors == 2:
       self.displayPage(self.button5, self.displayResetPage)
-    elif g.num_of_motors == 4:
+    elif g.supported_num_of_motors == 4:
       self.displayPage(self.button9, self.displayResetPage)
     ############################################################
 
@@ -113,10 +113,10 @@ class MainAppFrame(tb.Frame):
     self.button3.configure(state="normal")
     self.button4.configure(state="normal")
 
-    if g.num_of_motors == 2:
+    if g.supported_num_of_motors == 2:
       self.button5.configure(state="normal")
     
-    elif g.num_of_motors == 4:
+    elif g.supported_num_of_motors == 4:
       self.button5.configure(state="normal")
       self.button6.configure(state="normal")
       self.button7.configure(state="normal")

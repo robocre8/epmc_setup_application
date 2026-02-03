@@ -28,8 +28,8 @@ class SerialConnectFrame(tb.Frame):
     self.frame = tb.LabelFrame(self, borderwidth=10, bootstyle='primary')
 
     #create widgets to be added to frame
-    self.selectNumOfMotors = SelectValueFrame(self.frame, keyTextInit="NUM OF MOTORS: ", valTextInit=g.num_of_motors,
-                                       initialComboValues=g.num_of_motors_list,
+    self.selectNumOfMotors = SelectValueFrame(self.frame, keyTextInit="SUPPORTED NUM OF MOTORS: ", valTextInit=g.supported_num_of_motors,
+                                       initialComboValues=g.supported_num_of_motors_list,
                                        middileware_func=self.selectNumOfMotorsFunc)
     
     self.selectPort = SelectValueFrame(self.frame, keyTextInit="PORT: ", valTextInit=g.port,
@@ -64,12 +64,12 @@ class SerialConnectFrame(tb.Frame):
 
   def selectNumOfMotorsFunc(self, num_of_motors):
     try:
-      if num_of_motors and int(num_of_motors) in g.num_of_motors_list:
-        g.num_of_motors = int(num_of_motors)
+      if num_of_motors and int(num_of_motors) in g.supported_num_of_motors_list:
+        g.supported_num_of_motors = int(num_of_motors)
     except:
       pass
 
-    return g.num_of_motors
+    return g.supported_num_of_motors
   
   def refreshPortlist(self):
     try:
@@ -86,13 +86,14 @@ class SerialConnectFrame(tb.Frame):
       serial_port = g.port
       serial_baudrate = 115200
       serial_timeout = 0.05
+      supported_num_of_motors = g.supported_num_of_motors
 
-      num_of_motors = g.num_of_motors
+      g.controller = EPMCSerialClient()
 
-      if num_of_motors == 2:
-        g.controller = EPMCSerialClient(SupportedNumOfMotors.TWO)
-      elif num_of_motors == 4:
-        g.controller = EPMCSerialClient(SupportedNumOfMotors.FOUR)
+      if supported_num_of_motors == 2:
+        g.controller.supportedNumOfMotors(SupportedNumOfMotors.TWO)
+      elif supported_num_of_motors == 4:
+        g.controller.supportedNumOfMotors(SupportedNumOfMotors.FOUR)
       else:
         return False
     
@@ -124,4 +125,4 @@ class SerialConnectFrame(tb.Frame):
       self.next_func()
     else:
       # print("Error connecting to driver")
-      Messagebox.show_error(f"[ERROR]\n\nPossible Problems:\n\nEPMC selected port: {g.port} is wrong\nOR\nEPMC motor count mismatch", "ERROR")
+      Messagebox.show_error(f"[ERROR]\n\nPossible Problems:\n\nEPMC selected port: {g.port} is wrong\nOR\nEPMC supported number of motors mismatch", "ERROR")

@@ -45,8 +45,11 @@ class SupportedNumOfMotors(Enum):
 class EPMCSerialClient:
     """Python client for EPMC serial communication."""
 
-    def __init__(self, supported_num_of_motors: SupportedNumOfMotors):
+    def __init__(self):
         self.ser: serial.Serial | None = None
+        self.num_of_motors: int | None = None
+
+    def supportedNumOfMotors(self, supported_num_of_motors: SupportedNumOfMotors):
         self.num_of_motors: int = supported_num_of_motors.value
 
     def connect(self, port: str, baud: int = 115200, timeout: float = 0.1):
@@ -55,11 +58,12 @@ class EPMCSerialClient:
 
         for _ in range(10):
             if self.confirmNumOfMotors():
+                print("EPMC Connected Successfully")
                 return
             sleep(0.1)
 
         self.disconnect()
-        raise RuntimeError("EPMC motor count mismatch")
+        raise RuntimeError("EPMC supported number of motors mismatch")
 
     def disconnect(self):
         if self.ser and self.ser.is_open:

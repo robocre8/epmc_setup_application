@@ -6,8 +6,8 @@ class g():
   controller = None
   port = "None"
 
-  num_of_motors_list = [2, 4]
-  num_of_motors = 2
+  supported_num_of_motors_list = [2, 4]
+  supported_num_of_motors = 2
 
   dirConfigTextList = ['left wheel', 'right wheel']
   durationList = [5,10, 15, 20] # in sec
