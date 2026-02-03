@@ -1,5 +1,5 @@
 # Easy PID Motor Controller (EPMC) Setup Application
-It contains source code of the Easy PID Motor Controller (EPMC) GUI application. The application requires that you have the **`L298N EPMC MODULE`** (or a **`CUSTOM EPMC INTERFACE BOARD`**) is connected to your PC. Without the module, only the start page can be viewed.
+It contains source code of the Easy PID Motor Controller (EPMC) GUI application. Without the module, only the start page can be viewed.
 
 ![Screenshot 2025-05-08 150800](https://github.com/user-attachments/assets/e54d6d61-082f-4f94-b973-b93f00fe7d40)
 
@@ -20,7 +20,8 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
 - install python virtual environment
   > ```shell
   > sudo apt install python3-pip   # linux or mac users
-  > sudo apt install python3-venv   # linux or mac users
+  > ```
+  > ```shell
   > sudo apt install python3-virtualenv   # linux or mac users
   > ```
   > *OR*
@@ -28,11 +29,11 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
   > pip install virtualenv   # windows users (ensure you have pip installed)
   > ```
   
-- Ensure you have the **`Easy IMU Module`** connected to the PC.
+- Ensure you have the **`EPMC Module`** connected to the PC.
 
 #
 
-#### Run App First Time [ Ubuntu or Mac Users ]
+#### Run / Build App [ Ubuntu or Mac Users ]
 - Download (by clicking on the green Code button above) or clone the repo into your PC using **`git clone`**
   > you can use this command if you want to clone the repo:
   >
@@ -68,6 +69,15 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
   > ```
 
 - Now follow this tutorial on [how to use the **Easy PID Motor Controller** to setup velocity PID for a DC Motor](https://robocre8.gitbook.io/robocre8/epmc-tutorials/how-to-setup-dc-motor-pid-speed-control-with-the-epmc)
+
+- build the application with pyinstaller (optional):
+  > ```shell
+  > pyinstaller app.py --onefile --name epmc_app_ubuntu_<OS-version-number> --hidden-import='PIL._tkinter_finder' --noconsole
+  > ```
+  > OR
+  > ```shell
+  > pyinstaller app.py --onefile --name epmc_app_mac_<OS-version-number> --hidden-import='PIL._tkinter_finder' --noconsole
+  > ```
   
 - once you are done using the application, just close and deactivate the environment
   ```shell
@@ -76,7 +86,7 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
 
 #
 
-#### Run App First Time [ Windows ]
+#### Run / Build App [ Windows ]
 - Download (by clicking on the green Code button above) or clone the repo into your PC using **`git clone`**
   > you can use this command if you want to clone the repo:
   >
@@ -96,8 +106,11 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
 
 - activate the virtual environment
   > ```shell
-  > .\.env\Scripts\activate.bat # In CMD
   > .\.env\Scripts\Activate.ps1 # In Powershel
+  > ```
+  > OR
+  > ```shell
+  > .\.env\Scripts\activate.bat # In CMD
   > ```
 
 - you should see now that you are in the **`.env`** virtual environment
@@ -113,116 +126,13 @@ It contains source code of the Easy PID Motor Controller (EPMC) GUI application.
   > ```
 
 - Now follow this tutorial on [how to use the **Easy PID Motor Controller** to setup velocity PID for a DC Motor](https://robocre8.gitbook.io/robocre8/epmc-tutorials/how-to-setup-dc-motor-pid-speed-control-with-the-epmc)
-  
-- once you are done using the application, just close and dectivate the environment
-  > ```shell
-  > deactivate
-  > ```
-  
-#
-
-#### Run App - Not As First Time [ Ubuntu or Mac Users ]
-- change directory into the root **`epmc_setup_application`** folder
-  > ```shell
-  > cd epmc_setup_application/
-  > ```
-
-- activate the virtual environment
-  > ```shell
-  > source .env/bin/activate
-  > ```
-
-- you should see now that you are in the **`.env`** virtual environment
-
-- now you can run the app in the virtual environment
-  > ```shell
-  > python3 app.py
-  > ```
-
-- Now follow this tutorial on [how to use the **Easy PID Motor Controller** to setup velocity PID for a DC Motor](https://robocre8.gitbook.io/robocre8/epmc-tutorials/how-to-setup-dc-motor-pid-speed-control-with-the-epmc)
-  
-- once you are done using the application, just close and dectivate the environment
-  ```shell
-    deactivate
-  ```
-
-#
-
-#### Run App - Not As First Time [ Windows ]
-
-- change directory into the root **`epmc_setup_application`** folder
-  > ```shell
-  > cd .\epmc_setup_application\
-  > ```
-
-- activate the virtual environment
-  > ```shell
-  > .\.env\Scripts\activate.bat # In CMD
-  > .\.env\Scripts\Activate.ps1 # In Powershel
-  > ```
-
-- you should see now that you are in the **`.env`** virtual environment
-
-- now you can run the app in the virtual environment
-  > ```shell
-  > python app.py
-  > ```
-
-- Now follow this tutorial on [how to use the **Easy PID Motor Controller** to setup velocity PID for a DC Motor](https://robocre8.gitbook.io/robocre8/epmc-tutorials/how-to-setup-dc-motor-pid-speed-control-with-the-epmc)
-  
-- once you are done using the application, just close and dectivate the environment
-  > ```shell
-  > deactivate
-  > ```
-
-#
-
-#### Build epmc_app with pyinstaller [Linux and Mac]
-
-- change directory into the root **`epmc_setup_application`** folder
-  > ```shell
-  > cd epmc_setup_application/
-  > ```
-
-- activate the virtual environment
-  > ```shell
-  > source .env/bin/activate
-  > ```
-
-- you should see now that you are in the **`.env`** virtual environment
-
-- build the application with pyinstaller:
-  > ```shell
-  > pyinstaller app.py --onefile --name epmc_app_ubuntu_<OS-version-number> --hidden-import='PIL._tkinter_finder' --noconsole
-  > ```
-  > OR
-  > ```shell
-  > pyinstaller app.py --onefile --name epmc_app_mac_<OS-version-number> --hidden-import='PIL._tkinter_finder' --noconsole
-  > ```
-
-#
-
-#### Build epmc_app with pyinstaller [Windows]
-
-- change directory into the root **`epmc_setup_application`** folder
-  > ```shell
-  > cd epmc_setup_application\
-  > ```
-
-- activate the virtual environment
-  > ```shell
-  > .\.env\Scripts\activate.bat # In CMD
-  > .\.env\Scripts\Activate.ps1 # In Powershel
-  > ```
-
-- you should see now that you are in the **`.env`** virtual environment
 
 - build the application with pyinstaller:
   > ```shell
   > pyinstaller app.py --onefile --name epmc_app_windows_<OS-version-number> --hidden-import='PIL._tkinter_finder' --noconsole
   > ```
   
-- once you are done, close and dectivate the environment
+- once you are done using the application, just close and dectivate the environment
   > ```shell
   > deactivate
   > ```
