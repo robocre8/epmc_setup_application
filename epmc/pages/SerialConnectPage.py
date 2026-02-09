@@ -4,7 +4,7 @@ from ttkbootstrap.constants import *
 from ttkbootstrap.dialogs import Messagebox
 
 import serial.tools.list_ports
-from epmc.epmc_serial import EPMCSerialClient, SupportedNumOfMotors
+from epmc.epmc_serial import EPMCSerialClient
 
 import time
 
@@ -27,11 +27,7 @@ class SerialConnectFrame(tb.Frame):
 
     self.frame = tb.LabelFrame(self, borderwidth=10, bootstyle='primary')
 
-    #create widgets to be added to frame
-    self.selectNumOfMotors = SelectValueFrame(self.frame, keyTextInit="SUPPORTED NUM OF MOTORS: ", valTextInit=g.supported_num_of_motors,
-                                       initialComboValues=g.supported_num_of_motors_list,
-                                       middileware_func=self.selectNumOfMotorsFunc)
-    
+    #create widgets to be added to frame    
     self.selectPort = SelectValueFrame(self.frame, keyTextInit="PORT: ", valTextInit=g.port,
                                        initialComboValues=self.refreshPortlist(),
                                        middileware_func=self.selectPortFunc)
@@ -45,7 +41,6 @@ class SerialConnectFrame(tb.Frame):
                                command=self.refresh_serial_func)
 
     #add framed widgets to frame
-    self.selectNumOfMotors.pack(side='top', fill="both", pady=10)
     self.selectPort.pack(side='top', fill="both", pady=(5,35))
     self.connectButton.pack(side='top', fill="both", pady=10)
     self.refreshButton.pack(side='top', fill="both", pady=10)
@@ -61,15 +56,6 @@ class SerialConnectFrame(tb.Frame):
       pass
 
     return g.port
-
-  def selectNumOfMotorsFunc(self, num_of_motors):
-    try:
-      if num_of_motors and int(num_of_motors) in g.supported_num_of_motors_list:
-        g.supported_num_of_motors = int(num_of_motors)
-    except:
-      pass
-
-    return g.supported_num_of_motors
   
   def refreshPortlist(self):
     try:
@@ -86,17 +72,8 @@ class SerialConnectFrame(tb.Frame):
       serial_port = g.port
       serial_baudrate = 115200
       serial_timeout = 0.05
-      supported_num_of_motors = g.supported_num_of_motors
 
       g.controller = EPMCSerialClient()
-
-      if supported_num_of_motors == 2:
-        g.controller.supportedNumOfMotors(SupportedNumOfMotors.TWO)
-      elif supported_num_of_motors == 4:
-        g.controller.supportedNumOfMotors(SupportedNumOfMotors.FOUR)
-      else:
-        return False
-    
       g.controller.connect(serial_port, serial_baudrate, serial_timeout)
 
       g.controller.setCmdTimeout(0)
@@ -117,7 +94,6 @@ class SerialConnectFrame(tb.Frame):
 
   def connect_serial_func(self):
     # port = self.selectPort.getSelectedVal()
-    # num_of_mtr = self.selectNumOfMotors.getSelectedVal()
     serIsConnected = self.connectToPort()
     if serIsConnected:
       # print("connection successful")
@@ -125,4 +101,4 @@ class SerialConnectFrame(tb.Frame):
       self.next_func()
     else:
       # print("Error connecting to driver")
-      Messagebox.show_error(f"[ERROR]\n\nPossible Problems:\n\nEPMC selected port: {g.port} is wrong\nOR\nEPMC supported number of motors mismatch", "ERROR")
+      Messagebox.show_error(f"[ERROR]\n\nPossible Problems:\n\nEPMC selected port: {g.port} is wrong", "ERROR")

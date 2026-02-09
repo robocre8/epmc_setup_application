@@ -37,20 +37,13 @@ READ_MOTOR_DATA = 0x2A
 CLEAR_DATA_BUFFER = 0x2C
 GET_NUM_OF_MOTORS = 0x2D
 
-class SupportedNumOfMotors(Enum):
-    TWO = 2
-    FOUR = 4
-
 
 class EPMCSerialClient:
     """Python client for EPMC serial communication."""
 
     def __init__(self):
         self.ser: serial.Serial | None = None
-        self.num_of_motors: int | None = None
-
-    def supportedNumOfMotors(self, supported_num_of_motors: SupportedNumOfMotors):
-        self.num_of_motors: int = supported_num_of_motors.value
+        self.num_of_motors: int = 4
 
     def connect(self, port: str, baud: int = 115200, timeout: float = 0.1):
         self.ser = serial.Serial(port, baud, timeout=timeout)
@@ -63,7 +56,7 @@ class EPMCSerialClient:
             sleep(0.1)
 
         self.disconnect()
-        raise RuntimeError("EPMC supported number of motors mismatch")
+        raise RuntimeError("EPMC Could not connect, Try Again")
 
     def disconnect(self):
         if self.ser and self.ser.is_open:
@@ -172,51 +165,31 @@ class EPMCSerialClient:
     # ------------------ Motor Commands ------------------
 
     def writeSpeed(self, v0: float, v1: float, v2: float = 0.0, v3: float = 0.0):
-        if self.num_of_motors == SupportedNumOfMotors.TWO.value:
-            self.write_data2(WRITE_VEL, v0, v1)
-        elif self.num_of_motors == SupportedNumOfMotors.FOUR.value:
-            self.write_data4(WRITE_VEL, v0, v1, v2, v3)
+        self.write_data4(WRITE_VEL, v0, v1, v2, v3)
 
     def writePWM(self, pwm0: float, pwm1: float, pwm2: float = 0.0, pwm3: float = 0.0):
-        if self.num_of_motors == SupportedNumOfMotors.TWO.value:
-            self.write_data2(WRITE_PWM, pwm0, pwm1)
-        elif self.num_of_motors == SupportedNumOfMotors.FOUR.value:
-            self.write_data4(WRITE_PWM, pwm0, pwm1, pwm2, pwm3)
-    
-    # ----- MOTOR READ HELPERS ----------
-
-    def _read_motor_array(self, cmd: int):
-        if self.num_of_motors == SupportedNumOfMotors.TWO.value:
-            success, vals = self.read_data2(cmd)
-        elif self.num_of_motors == SupportedNumOfMotors.FOUR.value:
-            success, vals = self.read_data4(cmd)
-        else:
-            return False, tuple()
-
-        return success, tuple(round(v, 4) for v in vals)
+        self.write_data4(WRITE_PWM, pwm0, pwm1, pwm2, pwm3)
 
     # ---------- READ COMMANDS ----------
 
     def readPos(self):
-        return self._read_motor_array(READ_POS)
+        success, vals = self.read_data4(READ_POS)
+        return success, tuple(round(v, 4) for v in vals)
 
     def readVel(self):
-        return self._read_motor_array(READ_VEL)
+        success, vals = self.read_data4(READ_VEL)
+        return success, tuple(round(v, 4) for v in vals)
 
     def readUVel(self):
-        return self._read_motor_array(READ_UVEL)
+        success, vals = self.read_data4(READ_UVEL)
+        return success, tuple(round(v, 4) for v in vals)
 
     def readTVel(self):
-        return self._read_motor_array(READ_TVEL)
+        success, vals = self.read_data4(READ_TVEL)
+        return success, tuple(round(v, 4) for v in vals)
 
     def readMotorData(self):
-        if self.num_of_motors == SupportedNumOfMotors.TWO.value:
-            success, vals = self.read_data4(READ_MOTOR_DATA)
-        elif self.num_of_motors == SupportedNumOfMotors.FOUR.value:
-            success, vals = self.read_data8(READ_MOTOR_DATA)
-        else:
-            return False, tuple()
-
+        success, vals = self.read_data8(READ_MOTOR_DATA)
         return success, tuple(round(v, 4) for v in vals)
 
     # ------------------ PID / Timeout ------------------
