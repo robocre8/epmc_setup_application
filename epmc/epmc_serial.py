@@ -47,7 +47,7 @@ class EPMCSerialClient:
 
     def __init__(self):
         self.ser: serial.Serial | None = None
-        self.num_of_motors: int | None = None
+        self.num_of_motors: int = 2
 
     def supportedNumOfMotors(self, supported_num_of_motors: SupportedNumOfMotors):
         self.num_of_motors: int = supported_num_of_motors.value
